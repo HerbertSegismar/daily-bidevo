@@ -40,8 +40,8 @@ const Footer = () => {
 
         <div className="mt-6 pt-6 border-t border-gray-200 text-center">
           <p className="text-xs text-gray-500">
-            &copy; {new Date().getFullYear()} Daily Bread Devotional App. All
-            rights reserved.
+            <span className="text-amber-400">&copy;</span> {new Date().getFullYear()} Daily Bread
+            Devotional App. All rights reserved.
           </p>
         </div>
       </div>

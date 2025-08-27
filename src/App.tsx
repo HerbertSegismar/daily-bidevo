@@ -7,6 +7,7 @@ import Devotionals from "./pages/Devotionals";
 import Bookmarks from "./pages/Bookmarks";
 import Prayers from "./pages/Prayers";
 import Settings from "./pages/Settings";
+import NotFound from "./pages/NotFound";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
             <Route path="/bookmarks" element={<Bookmarks />} />
             <Route path="/prayers" element={<Prayers />} />
             <Route path="/settings" element={<Settings />} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </main>
         <Footer />
