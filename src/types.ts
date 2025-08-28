@@ -1,6 +1,6 @@
+import type React from "react";
 import type { JSX } from "react";
 
-// src/types.ts
 export interface BibleVerse {
   text: string;
   reference: string;

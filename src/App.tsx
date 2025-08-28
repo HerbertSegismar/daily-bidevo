@@ -1,4 +1,3 @@
-// src/App.tsx
 import { Route, createBrowserRouter, createRoutesFromElements, RouterProvider } from "react-router-dom";
 import Home from "./pages/Home";
 import Devotionals from "./pages/Devotionals";
@@ -8,7 +7,7 @@ import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 import RootLayout from "./RootLayout";
 
-function App() {
+export default function App() {
   const router = createBrowserRouter(
     createRoutesFromElements(
       <Route path="/" element={<RootLayout />}>
@@ -26,4 +25,4 @@ function App() {
   );
 }
 
-export default App;
+

@@ -1,4 +1,3 @@
-// src/pages/Settings.tsx
 import { useRef, useEffect, useState } from "react";
 import { gsap } from "gsap";
 import { FaBell, FaMoon, FaPalette, FaFont } from "react-icons/fa";

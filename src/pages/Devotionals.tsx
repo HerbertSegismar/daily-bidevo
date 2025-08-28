@@ -1,4 +1,3 @@
-// src/pages/Devotionals.tsx
 import { useRef, useEffect } from "react";
 import { gsap } from "gsap";
 import { FaCalendar, FaBookOpen } from "react-icons/fa";
