@@ -1,11 +1,46 @@
+// src/pages/Devotionals.tsx
 import { useRef, useEffect } from "react";
 import { gsap } from "gsap";
 import { FaCalendar, FaBookOpen } from "react-icons/fa";
+import { useTheme } from "../contexts/ThemeContext";
 
 const Devotionals = () => {
+  const { theme, colorScheme } = useTheme();
   const pageRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const cardsRef = useRef<HTMLDivElement>(null);
+
+  // Get color classes based on selected color scheme
+  const getColorClasses = () => {
+    switch (colorScheme) {
+      case "green":
+        return {
+          gradient: "from-green-500 to-teal-400",
+          text: "text-green-700",
+          lightBg: "bg-green-50",
+        };
+      case "red":
+        return {
+          gradient: "from-red-500 to-orange-400",
+          text: "text-red-700",
+          lightBg: "bg-red-50",
+        };
+      case "indigo":
+        return {
+          gradient: "from-indigo-500 to-purple-400",
+          text: "text-indigo-700",
+          lightBg: "bg-indigo-50",
+        };
+      default: // purple
+        return {
+          gradient: "from-purple-500 to-blue-400",
+          text: "text-purple-700",
+          lightBg: "bg-purple-50",
+        };
+    }
+  };
+
+  const colorClasses = getColorClasses();
 
   useEffect(() => {
     if (pageRef.current) {
@@ -77,14 +112,18 @@ const Devotionals = () => {
   return (
     <div
       ref={pageRef}
-      className="min-h-screen bg-gradient-to-b from-blue-50 to-purple-50 p-4 md:p-8"
+      className={`min-h-screen ${
+        theme === "dark"
+          ? "bg-gradient-to-b from-gray-800 to-gray-900"
+          : "bg-gradient-to-b from-blue-50 to-purple-50"
+      } p-4 md:p-8`}
     >
       <div className="max-w-4xl mx-auto">
         <h1
           ref={titleRef}
-          className="text-3xl font-bold text-purple-800 mb-8 flex items-center"
+          className={`text-3xl font-bold ${colorClasses.text} mb-8 flex items-center`}
         >
-          <FaBookOpen className="mr-3 text-purple-600" />
+          <FaBookOpen className={`mr-3 ${colorClasses.text}`} />
           Daily Devotionals
         </h1>
 
@@ -92,19 +131,25 @@ const Devotionals = () => {
           {devotionals.map((devotional) => (
             <div
               key={devotional.id}
-              className="bg-white/70 backdrop-blur-lg rounded-xl shadow-md p-6 border border-white/30 hover:shadow-lg transition-shadow duration-300"
+              className="bg-white/70 dark:bg-gray-700/70 backdrop-blur-lg rounded-xl shadow-md p-6 border border-white/30 dark:border-gray-600/30 hover:shadow-lg transition-shadow duration-300"
             >
               <div className="flex items-start justify-between mb-4">
-                <h2 className="text-xl font-semibold text-purple-800">
+                <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200">
                   {devotional.title}
                 </h2>
-                <div className="flex items-center text-sm text-gray-500 bg-purple-50/50 px-2 py-1 rounded-full">
-                  <FaCalendar className="mr-1 text-purple-500" />
+                <div
+                  className={`flex items-center text-sm text-gray-500 ${colorClasses.lightBg}/50 dark:bg-gray-600/50 px-2 py-1 rounded-full`}
+                >
+                  <FaCalendar className={`mr-1 ${colorClasses.text}`} />
                   {devotional.date}
                 </div>
               </div>
-              <p className="text-gray-600 mb-4">Verse: {devotional.verse}</p>
-              <button className="bg-gradient-to-r from-purple-500 to-blue-400 text-white px-4 py-2 rounded-full text-sm font-medium hover:from-purple-600 hover:to-blue-500 transition-all duration-300">
+              <p className="text-gray-600 dark:text-gray-300 mb-4">
+                Verse: {devotional.verse}
+              </p>
+              <button
+                className={`bg-gradient-to-r ${colorClasses.gradient} text-white px-4 py-2 rounded-full text-sm font-medium hover:opacity-90 transition-all duration-300`}
+              >
                 Read Devotional
               </button>
             </div>

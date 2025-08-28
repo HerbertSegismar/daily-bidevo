@@ -28,7 +28,7 @@ h1, h2, h3 {
   }
   
   .theme-red {
-    --color-primary: 239 68 68; /* red-500 */
+    --color-primary: 100 68 68; /* red-500 */
     --color-secondary: 249 115 22; /* orange-400 */
   }
   
