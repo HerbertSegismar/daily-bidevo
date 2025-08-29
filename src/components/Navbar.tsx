@@ -15,6 +15,7 @@ import {
 } from "react-icons/fa";
 import { useTheme } from "../contexts/ThemeContext"; // Import useTheme
 import type { NavItem } from "../types";
+import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/clerk-react";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -125,6 +126,18 @@ const Navbar = () => {
             >
               {isMenuOpen ? <FaTimes /> : <FaBars />}
             </button>
+            <header className="flex items-center justify-center">
+              <SignedOut>
+                <div className="bg-purple-100 text-purple-700 p-2 rounded-lg text-sm font-light hover:scale-110 transition-all duration-100 ease-in-out">
+                  <SignInButton mode="modal" />
+                </div>
+              </SignedOut>
+              <SignedIn>
+                <div className="flex items-center justify-center bg-purple-100 p-1 size-[34px] rounded-lg hover:scale-110 transition-all duration-100 ease-in-out">
+                  <UserButton />
+                </div>
+              </SignedIn>
+            </header>
           </div>
         </div>
 
