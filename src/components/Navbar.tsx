@@ -1,3 +1,4 @@
+// src/components/Navbar.tsx
 import { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { gsap } from "gsap";
@@ -9,7 +10,10 @@ import {
   FaPrayingHands,
   FaBars,
   FaTimes,
+  FaMoon,
+  FaSun, // Add FaSun icon
 } from "react-icons/fa";
+import { useTheme } from "../contexts/ThemeContext"; // Import useTheme
 import type { NavItem } from "../types";
 
 const Navbar = () => {
@@ -17,6 +21,7 @@ const Navbar = () => {
   const location = useLocation();
   const navbarRef = useRef<HTMLDivElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
+  const { theme, toggleTheme } = useTheme(); // Get theme and toggle function
 
   const navItems: NavItem[] = [
     { label: "Home", path: "/", icon: <FaHome /> },
@@ -63,7 +68,7 @@ const Navbar = () => {
   return (
     <nav
       ref={navbarRef}
-      className="bg-white/80 backdrop-blur-md border-b border-purple-200/30 sticky top-0 z-50 shadow-sm"
+      className="bg-gradient-to-r from-amber-100 to-amber-600 backdrop-blur-md border-b border-purple-200/30 sticky top-0 z-50 shadow-sm"
     >
       <div className="container mx-auto px-4 py-3">
         <div className="flex justify-between items-center">
@@ -77,7 +82,7 @@ const Navbar = () => {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-1">
+          <div className="hidden md:flex items-center space-x-4">
             {navItems.map((item) => (
               <Link
                 key={item.path}
@@ -85,22 +90,42 @@ const Navbar = () => {
                 className={`flex items-center px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
                   location.pathname === item.path
                     ? "bg-purple-100 text-purple-700 shadow-sm"
-                    : "text-gray-600 hover:text-purple-700 hover:bg-purple-50"
+                    : "text-gray-800 hover:text-purple-700 hover:bg-purple-50"
                 }`}
               >
                 <span className="mr-2">{item.icon}</span>
                 {item.label}
               </Link>
             ))}
+
+            {/* Theme Toggle Switch */}
+            <button
+              onClick={toggleTheme}
+              className="p-2 rounded-full bg-purple-100 text-purple-700 hover:bg-purple-200 transition-colors duration-300"
+              aria-label="Toggle theme"
+            >
+              {theme === "dark" ? <FaSun size={18} /> : <FaMoon size={18} />}
+            </button>
           </div>
 
-          {/* Mobile Menu Button */}
-          <button
-            onClick={toggleMenu}
-            className="md:hidden p-2 rounded-lg bg-purple-100 text-purple-700"
-          >
-            {isMenuOpen ? <FaTimes /> : <FaBars />}
-          </button>
+          {/* Mobile Menu Button and Theme Toggle */}
+          <div className="flex items-center space-x-2">
+            {/* Theme Toggle for Mobile */}
+            <button
+              onClick={toggleTheme}
+              className="md:hidden p-2 rounded-full bg-purple-100 text-purple-700 mr-2"
+              aria-label="Toggle theme"
+            >
+              {theme === "dark" ? <FaSun size={18} /> : <FaMoon size={18} />}
+            </button>
+
+            <button
+              onClick={toggleMenu}
+              className="md:hidden p-2 rounded-lg bg-purple-100 text-purple-700"
+            >
+              {isMenuOpen ? <FaTimes /> : <FaBars />}
+            </button>
+          </div>
         </div>
 
         {/* Mobile Navigation */}

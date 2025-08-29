@@ -16,25 +16,25 @@ const Devotionals = () => {
       case "green":
         return {
           gradient: "from-green-500 to-teal-400",
-          text: "text-green-700",
+          text: "text-green-500",
           lightBg: "bg-green-50",
         };
       case "red":
         return {
           gradient: "from-red-500 to-orange-400",
-          text: "text-red-700",
+          text: "text-red-500",
           lightBg: "bg-red-50",
         };
       case "indigo":
         return {
           gradient: "from-indigo-500 to-purple-400",
-          text: "text-indigo-700",
+          text: "text-indigo-500",
           lightBg: "bg-indigo-50",
         };
       default: // purple
         return {
           gradient: "from-purple-500 to-blue-400",
-          text: "text-purple-700",
+          text: "text-purple-500",
           lightBg: "bg-purple-50",
         };
     }
@@ -138,7 +138,7 @@ const Devotionals = () => {
                   {devotional.title}
                 </h2>
                 <div
-                  className={`flex items-center text-sm text-gray-500 ${colorClasses.lightBg}/50 dark:bg-gray-600/50 px-2 py-1 rounded-full`}
+                  className={`flex items-center text-sm text-slate-200 ${colorClasses.lightBg}/50 dark:bg-gray-500/50 px-2 py-1 rounded-full`}
                 >
                   <FaCalendar className={`mr-1 ${colorClasses.text}`} />
                   {devotional.date}
