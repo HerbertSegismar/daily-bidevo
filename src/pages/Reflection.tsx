@@ -1,12 +1,141 @@
-// src/pages/Reflection.tsx
 import { useState, useRef, useEffect } from "react";
 import { gsap } from "gsap";
-import { FaArrowLeft, FaSave, FaHeart } from "react-icons/fa";
+import {
+  FaArrowLeft,
+  FaSave,
+  FaHeart,
+  FaBold,
+  FaItalic,
+  FaUnderline,
+} from "react-icons/fa";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useTheme } from "../contexts/ThemeContext";
 import { useBibleVersion } from "../contexts/BibleVersionContext";
 import { getColorClasses } from "../utils/colorUtils";
 import type { Devotional, ReflectionPrompt } from "../types";
+
+const RichTextEditor = ({
+  value,
+  onChange,
+  placeholder,
+}: {
+  value: string;
+  onChange: (value: string) => void;
+  placeholder: string;
+}) => {
+  const [isBold, setIsBold] = useState(false);
+  const [isItalic, setIsItalic] = useState(false);
+  const [isUnderline, setIsUnderline] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
+  const editorRef = useRef<HTMLDivElement>(null);
+
+  // Check if content is empty (including HTML tags)
+  const isEmpty = value.replace(/<[^>]*>/g, "").trim() === "";
+
+  // Show placeholder when empty and not focused
+  useEffect(() => {
+    if (editorRef.current) {
+      if (isEmpty && !isFocused) {
+        editorRef.current.innerHTML = `<span class="placeholder-text">${placeholder}</span>`;
+      } else if (editorRef.current.innerHTML.includes("placeholder-text")) {
+        editorRef.current.innerHTML = value;
+      }
+    }
+  }, [value, isFocused, placeholder, isEmpty]);
+
+  const handleFocus = () => {
+    setIsFocused(true);
+    if (isEmpty && editorRef.current) {
+      editorRef.current.innerHTML = "";
+    }
+  };
+
+  const handleBlur = () => {
+    setIsFocused(false);
+    handleContentChange();
+  };
+
+  const applyFormatting = (format: string) => {
+    document.execCommand(format, false);
+    updateButtonStates();
+    handleContentChange();
+  };
+
+  const updateButtonStates = () => {
+    setIsBold(document.queryCommandState("bold"));
+    setIsItalic(document.queryCommandState("italic"));
+    setIsUnderline(document.queryCommandState("underline"));
+  };
+
+  const handleContentChange = () => {
+    if (editorRef.current) {
+      // Don't save placeholder text as content
+      if (!editorRef.current.innerHTML.includes("placeholder-text")) {
+        onChange(editorRef.current.innerHTML);
+      } else {
+        onChange("");
+      }
+    }
+  };
+
+  return (
+    <div className="border border-gray-200 dark:border-gray-600 rounded-lg overflow-hidden">
+      {/* Toolbar */}
+      <div className="flex items-center p-2 bg-gray-100 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600">
+        <button
+          type="button"
+          onClick={() => applyFormatting("bold")}
+          className={`p-2 rounded mr-1 ${
+            isBold
+              ? "bg-gray-300 dark:bg-gray-600"
+              : "hover:bg-gray-200 dark:hover:bg-gray-600"
+          }`}
+          aria-label="Bold"
+        >
+          <FaBold className="text-sm" />
+        </button>
+        <button
+          type="button"
+          onClick={() => applyFormatting("italic")}
+          className={`p-2 rounded mr-1 ${
+            isItalic
+              ? "bg-gray-300 dark:bg-gray-600"
+              : "hover:bg-gray-200 dark:hover:bg-gray-600"
+          }`}
+          aria-label="Italic"
+        >
+          <FaItalic className="text-sm" />
+        </button>
+        <button
+          type="button"
+          onClick={() => applyFormatting("underline")}
+          className={`p-2 rounded ${
+            isUnderline
+              ? "bg-gray-300 dark:bg-gray-600"
+              : "hover:bg-gray-200 dark:hover:bg-gray-600"
+          }`}
+          aria-label="Underline"
+        >
+          <FaUnderline className="text-sm" />
+        </button>
+      </div>
+
+      {/* Editable Content Area */}
+      <div className="relative">
+        <div
+          ref={editorRef}
+          className="w-full min-h-32 p-3 text-gray-700 dark:text-gray-300 bg-white/50 dark:bg-gray-600/50 focus:outline-none resize-none"
+          contentEditable
+          onInput={handleContentChange}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          onKeyUp={updateButtonStates}
+          onMouseUp={updateButtonStates}
+        />
+      </div>
+    </div>
+  );
+};
 
 const Reflection = () => {
   const navigate = useNavigate();
@@ -102,6 +231,18 @@ const Reflection = () => {
           : "bg-gradient-to-b from-blue-50 to-purple-50"
       } p-4 md:p-8`}
     >
+      <style>
+        {`
+          .placeholder-text {
+            color: #9ca3af;
+            font-style: italic;
+          }
+          .dark .placeholder-text {
+            color: #6b7280;
+          }
+        `}
+      </style>
+
       <div className="max-w-2xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
@@ -158,13 +299,10 @@ const Reflection = () => {
               <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">
                 {prompt.question}
               </h3>
-              <textarea
+              <RichTextEditor
                 value={reflections[prompt.id] || ""}
-                onChange={(e) =>
-                  handleReflectionChange(prompt.id, e.target.value)
-                }
+                onChange={(value) => handleReflectionChange(prompt.id, value)}
                 placeholder={prompt.placeholder}
-                className="w-full h-32 p-3 text-gray-700 dark:text-gray-300 bg-white/50 dark:bg-gray-600/50 rounded-lg border border-gray-200 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
               />
             </div>
           ))}
