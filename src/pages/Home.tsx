@@ -18,7 +18,7 @@ import type { Devotional } from "../types";
 const Home = () => {
   const navigate = useNavigate();
   const { theme, colorScheme } = useTheme();
-  const { bibleVersion } = useBibleVersion(); // Get the selected Bible version
+  const { bibleVersion } = useBibleVersion();
   const [currentDevotional, setCurrentDevotional] = useState<Devotional | null>(
     null
   );
@@ -35,6 +35,15 @@ const Home = () => {
 
   useEffect(() => {
     setCurrentDevotional(devotionals[currentDevotionalIndex]);
+
+    // Check if current devotional is bookmarked
+    if (devotionals[currentDevotionalIndex]) {
+      const bookmarks = JSON.parse(localStorage.getItem("bookmarks") || "[]");
+      const isBookmarked = bookmarks.some(
+        (b: Devotional) => b.id === devotionals[currentDevotionalIndex].id
+      );
+      setBookmarked(isBookmarked);
+    }
 
     // Animations
     if (appRef.current) {
@@ -74,7 +83,24 @@ const Home = () => {
   }, [currentDevotionalIndex]);
 
   const handleBookmark = (): void => {
+    if (!currentDevotional) return;
+
+    const bookmarks = JSON.parse(localStorage.getItem("bookmarks") || "[]");
+    let updatedBookmarks;
+
+    if (bookmarked) {
+      // Remove from bookmarks
+      updatedBookmarks = bookmarks.filter(
+        (b: Devotional) => b.id !== currentDevotional.id
+      );
+    } else {
+      // Add to bookmarks
+      updatedBookmarks = [...bookmarks, currentDevotional];
+    }
+
+    localStorage.setItem("bookmarks", JSON.stringify(updatedBookmarks));
     setBookmarked(!bookmarked);
+
     const bookmarkIcon = cardRef.current?.querySelector(".bookmark-icon");
     if (bookmarkIcon) {
       gsap.fromTo(
@@ -99,7 +125,7 @@ const Home = () => {
       navigator
         .share({
           title: currentDevotional.title,
-          text: verseText, // Use the version-specific text
+          text: verseText,
           url: window.location.href,
         })
         .catch((error) => {
@@ -163,11 +189,10 @@ const Home = () => {
               </h2>
             </div>
             <p className="text-gray-700 dark:text-gray-300 italic mb-2">
-              "{verseText}" {/* Use the version-specific text */}
+              "{verseText}"
             </p>
             <p className={`text-right ${colorClasses.text} font-medium`}>
-              {currentDevotional.verse.reference} ({bibleVersion}){" "}
-              {/* Use the context version */}
+              {currentDevotional.verse.reference} ({bibleVersion})
             </p>
           </div>
 
