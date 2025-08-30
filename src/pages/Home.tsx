@@ -8,9 +8,11 @@ import {
   FaBookmark,
 } from "react-icons/fa";
 import { gsap } from "gsap";
-import type { Devotional } from "../types";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "../contexts/ThemeContext";
+import { devotionals } from "../data/devotionals";
+import { getColorClasses } from "../utils/colorUtils";
+import type { Devotional } from "../types";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -27,80 +29,7 @@ const Home = () => {
   const contentRef = useRef<HTMLDivElement>(null);
   const prayerRef = useRef<HTMLDivElement>(null);
 
-  // Get color classes based on selected color scheme
-  const getColorClasses = () => {
-    switch (colorScheme) {
-      case "green":
-        return {
-          gradient: "from-green-500 to-teal-400",
-          text: "text-green-400",
-          lightBg: "bg-green-50",
-          lightBorder: "border-green-100",
-        };
-      case "red":
-        return {
-          gradient: "from-red-500 to-orange-400",
-          text: "text-red-400",
-          lightBg: "bg-red-50",
-          lightBorder: "border-red-100",
-        };
-      case "indigo":
-        return {
-          gradient: "from-indigo-500 to-purple-400",
-          text: "text-indigo-400",
-          lightBg: "bg-indigo-50",
-          lightBorder: "border-indigo-100",
-        };
-      default: // purple
-        return {
-          gradient: "from-purple-500 to-blue-400",
-          text: "text-purple-400",
-          lightBg: "bg-purple-50",
-          lightBorder: "border-purple-100",
-        };
-    }
-  };
-
-  const colorClasses = getColorClasses();
-
-  // Sample devotional data
-  const devotionals: Devotional[] = [
-    {
-      id: "1",
-      date: new Date().toDateString(),
-      verse: {
-        text: "For I know the plans I have for you, declares the Lord, plans to prosper you and not to harm you, plans to give you hope and a future.",
-        reference: "Jeremiah 29:11",
-        version: "NIV",
-      },
-      title: "God's Plans for You",
-      content: `When life feels uncertain or challenging, it's comforting to remember that God has a plan for each of us. This verse from Jeremiah reminds us that even when we can't see the way forward, God is working behind the scenes for our good.
-
-      His plans are not to harm us but to give us hope and a future. This doesn't mean we won't face difficulties, but rather that in the midst of them, we can trust that God is with us, guiding us toward a purposeful life.
-
-      Today, reflect on areas where you need to trust God's plan more fully. Where might you be trying to control outcomes instead of surrendering to His will?`,
-      prayer: `Heavenly Father, thank you for having good plans for my life. Help me to trust you more completely, especially when the path ahead seems unclear. Give me the faith to believe that you are working all things together for my good. Amen.`,
-      readingPlan: "Jeremiah 29-30",
-    },
-    {
-      id: "2",
-      date: new Date(Date.now() - 86400000).toDateString(),
-      verse: {
-        text: "Trust in the Lord with all your heart and lean not on your own understanding; in all your ways submit to him, and he will make your paths straight.",
-        reference: "Proverbs 3:5-6",
-        version: "NIV",
-      },
-      title: "Trust in the Lord",
-      content: `Trusting God completely is one of the most challenging yet rewarding aspects of our faith journey. It requires letting go of our need to understand everything and instead relying on God's infinite wisdom.
-
-      When we surrender our plans and desires to God, He promises to guide our steps and direct our paths. This doesn't mean life will be without challenges, but that we can have confidence God is leading us in the right direction.
-
-      Consider areas where you're struggling to trust God fully. What would it look like to release those concerns to Him today?`,
-      prayer: `Lord, help me to trust You with all my heart and not rely on my own understanding. Guide my steps and make my paths straight as I submit my ways to You. Amen.`,
-      readingPlan: "Proverbs 3-4",
-    },
-    // Add more devotionals as needed
-  ];
+  const colorClasses = getColorClasses(colorScheme);
 
   useEffect(() => {
     setCurrentDevotional(devotionals[currentDevotionalIndex]);

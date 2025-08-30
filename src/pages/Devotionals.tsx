@@ -1,46 +1,22 @@
 // src/pages/Devotionals.tsx
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { gsap } from "gsap";
-import { FaCalendar, FaBookOpen } from "react-icons/fa";
+import { FaCalendar, FaBookOpen, FaTimes } from "react-icons/fa";
 import { useTheme } from "../contexts/ThemeContext";
+import { devotionals } from "../data/devotionals";
+import { getColorClasses } from "../utils/colorUtils";
+import type { Devotional } from "../types";
 
 const Devotionals = () => {
   const { theme, colorScheme } = useTheme();
   const pageRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const cardsRef = useRef<HTMLDivElement>(null);
+  const [selectedDevotional, setSelectedDevotional] =
+    useState<Devotional | null>(null);
+  const modalRef = useRef<HTMLDivElement>(null);
 
-  // Get color classes based on selected color scheme
-  const getColorClasses = () => {
-    switch (colorScheme) {
-      case "green":
-        return {
-          gradient: "from-green-500 to-teal-400",
-          text: "text-green-500",
-          lightBg: "bg-green-50",
-        };
-      case "red":
-        return {
-          gradient: "from-red-500 to-orange-400",
-          text: "text-red-500",
-          lightBg: "bg-red-50",
-        };
-      case "indigo":
-        return {
-          gradient: "from-indigo-500 to-purple-400",
-          text: "text-indigo-500",
-          lightBg: "bg-indigo-50",
-        };
-      default: // purple
-        return {
-          gradient: "from-purple-500 to-blue-400",
-          text: "text-purple-500",
-          lightBg: "bg-purple-50",
-        };
-    }
-  };
-
-  const colorClasses = getColorClasses();
+  const colorClasses = getColorClasses(colorScheme);
 
   useEffect(() => {
     if (pageRef.current) {
@@ -69,45 +45,32 @@ const Devotionals = () => {
     }
   }, []);
 
-  // Sample devotionals data
-  const devotionals = [
-    {
-      id: 1,
-      title: "God's Faithfulness",
-      date: "Oct 10, 2023",
-      verse: "Lamentations 3:22-23",
-    },
-    {
-      id: 2,
-      title: "The Peace of God",
-      date: "Oct 9, 2023",
-      verse: "Philippians 4:6-7",
-    },
-    {
-      id: 3,
-      title: "Walking in Love",
-      date: "Oct 8, 2023",
-      verse: "Ephesians 5:1-2",
-    },
-    {
-      id: 4,
-      title: "The Joy of Salvation",
-      date: "Oct 7, 2023",
-      verse: "Psalm 51:12",
-    },
-    {
-      id: 5,
-      title: "Strength in Weakness",
-      date: "Oct 6, 2023",
-      verse: "2 Corinthians 12:9-10",
-    },
-    {
-      id: 6,
-      title: "Trust in the Lord",
-      date: "Oct 5, 2023",
-      verse: "Proverbs 3:5-6",
-    },
-  ];
+  useEffect(() => {
+    if (selectedDevotional && modalRef.current) {
+      gsap.fromTo(
+        modalRef.current,
+        { opacity: 0, scale: 0.8 },
+        { opacity: 1, scale: 1, duration: 0.5 }
+      );
+    }
+  }, [selectedDevotional]);
+
+  const openDevotional = (devotional: Devotional) => {
+    setSelectedDevotional(devotional);
+  };
+
+  const closeDevotional = () => {
+    if (modalRef.current) {
+      gsap.to(modalRef.current, {
+        opacity: 0,
+        scale: 0.8,
+        duration: 0.3,
+        onComplete: () => setSelectedDevotional(null),
+      });
+    } else {
+      setSelectedDevotional(null);
+    }
+  };
 
   return (
     <div
@@ -138,16 +101,17 @@ const Devotionals = () => {
                   {devotional.title}
                 </h2>
                 <div
-                  className={`flex items-center text-sm text-slate-200 ${colorClasses.lightBg}/50 dark:bg-gray-500/50 px-2 py-1 rounded-full`}
+                  className={`flex items-center text-sm ${colorClasses.lightBg}/20 dark:bg-gray-500/50 px-2 py-1 rounded-full`}
                 >
                   <FaCalendar className={`mr-1 ${colorClasses.text}`} />
-                  {devotional.date}
+                  <span className={colorClasses.text}>{devotional.date}</span>
                 </div>
               </div>
               <p className="text-gray-600 dark:text-gray-300 mb-4">
-                Verse: {devotional.verse}
+                Verse: {devotional.verse.reference}
               </p>
               <button
+                onClick={() => openDevotional(devotional)}
                 className={`bg-gradient-to-r ${colorClasses.gradient} text-white px-4 py-2 rounded-full text-sm font-medium hover:opacity-90 transition-all duration-300`}
               >
                 Read Devotional
@@ -156,6 +120,74 @@ const Devotionals = () => {
           ))}
         </div>
       </div>
+
+      {/* Modal for displaying devotional content */}
+      {selectedDevotional && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
+          <div
+            ref={modalRef}
+            className="relative max-w-2xl w-full bg-white dark:bg-gray-800 rounded-xl shadow-2xl overflow-hidden"
+          >
+            <div className={`p-6 ${colorClasses.lightBg} dark:bg-gray-700`}>
+              <div className="flex justify-between items-start mb-4">
+                <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-200">
+                  {selectedDevotional.title}
+                </h2>
+                <button
+                  onClick={closeDevotional}
+                  className={`p-2 rounded-full ${colorClasses.text} hover:bg-black/10 dark:hover:bg-white/10`}
+                >
+                  <FaTimes />
+                </button>
+              </div>
+              <div className="flex items-center text-sm mb-6">
+                <FaCalendar className={`mr-2 ${colorClasses.text}`} />
+                <span className={colorClasses.text}>
+                  {selectedDevotional.date}
+                </span>
+              </div>
+            </div>
+
+            <div className="p-6">
+              <div
+                className={`p-4 mb-6 rounded-lg ${colorClasses.lightBg}/20 dark:bg-gray-600/30`}
+              >
+                <p className="italic text-gray-700 dark:text-gray-300 mb-2">
+                  "{selectedDevotional.verse.text}"
+                </p>
+                <p className={`font-semibold ${colorClasses.text}`}>
+                  - {selectedDevotional.verse.reference} (
+                  {selectedDevotional.verse.version})
+                </p>
+              </div>
+
+              <div className="prose dark:prose-invert max-w-none">
+                <div className="text-gray-700 dark:text-gray-300 whitespace-pre-line mb-6">
+                  {selectedDevotional.content}
+                </div>
+
+                <div
+                  className={`p-4 rounded-lg ${colorClasses.lightBg}/10 dark:bg-gray-600/20`}
+                >
+                  <h3 className={`font-semibold mb-2 ${colorClasses.text}`}>
+                    Prayer
+                  </h3>
+                  <p className="text-gray-700 dark:text-gray-300 italic">
+                    {selectedDevotional.prayer}
+                  </p>
+                </div>
+
+                <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
+                  <p className="text-gray-600 dark:text-gray-400">
+                    <span className="font-semibold">Reading Plan:</span>{" "}
+                    {selectedDevotional.readingPlan}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

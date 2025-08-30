@@ -14,10 +14,17 @@ export interface Devotional {
   content: string;
   prayer: string;
   readingPlan: string;
+  reflection?: ReflectionPrompt[];
 }
 
 export interface NavItem {
   label: string;
   path: string;
   icon: JSX.Element;
+}
+
+export interface ReflectionPrompt {
+  id: string;
+  question: string;
+  placeholder: string;
 }

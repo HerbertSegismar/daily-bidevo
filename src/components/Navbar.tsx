@@ -77,8 +77,8 @@ const Navbar = () => {
             <div className="w-8 h-8 bg-gradient-to-r from-purple-600 to-blue-500 rounded-lg flex items-center justify-center">
               <FaBook className="text-white text-sm" />
             </div>
-            <span className="text-xl font-bold bg-gradient-to-r from-purple-600 to-blue-500 bg-clip-text text-transparent">
-              Daily Bread
+            <span className="text-lg md:text-xl font-semibold md:font-bold bg-gradient-to-r from-purple-600 to-blue-500 bg-clip-text text-transparent">
+              Daily Bible Devotional
             </span>
           </Link>
 

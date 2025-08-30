@@ -18,7 +18,7 @@ const NotFound = () => {
           className="bg-gradient-primary text-white px-6 py-3 rounded-full font-medium hover:opacity-90 transition-all duration-300 flex items-center justify-center"
         >
           <FaHome className="mr-2" />
-          Go Home
+          Go Back to Home
         </Link>
       </div>
     </div>
