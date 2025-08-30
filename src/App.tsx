@@ -6,7 +6,7 @@ import Prayers from "./pages/Prayers";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 import RootLayout from "./RootLayout";
-import Reflection from "./pages/reflection";
+import Reflection from "./pages/Reflection";
 
 export default function App() {
   const router = createBrowserRouter(
