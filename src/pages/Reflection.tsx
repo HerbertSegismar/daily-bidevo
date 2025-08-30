@@ -7,6 +7,7 @@ import {
   FaBold,
   FaItalic,
   FaUnderline,
+  FaDownload,
 } from "react-icons/fa";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useTheme } from "../contexts/ThemeContext";
@@ -218,6 +219,62 @@ const Reflection = () => {
     }
   };
 
+  // Function to download reflections as a text file
+  const downloadReflections = () => {
+    if (!devotional) return;
+
+    // Create the content for the text file
+    let content = `Reflections for ${devotional.title}\n`;
+    content += `Date: ${devotional.date}\n`;
+    content += `Verse: ${getVerseText(devotional.verse)}\n`;
+    content += `Reference: ${devotional.verse.reference} (${bibleVersion})\n\n`;
+
+    content += "MY REFLECTIONS:\n\n";
+
+    if (devotional.reflection && devotional.reflection.length > 0) {
+      devotional.reflection.forEach(
+        (prompt: ReflectionPrompt, index: number) => {
+          const reflectionText =
+            reflections[prompt.id] || "No reflection written yet";
+          // Strip HTML tags from the reflection text
+          const plainText = reflectionText.replace(/<[^>]*>/g, "");
+
+          content += `${index + 1}. ${prompt.question}\n`;
+          content += `${plainText}\n\n`;
+        }
+      );
+    } else {
+      content += "No reflection prompts available for this devotional.\n";
+    }
+
+    // Create a blob and download link
+    const blob = new Blob([content], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `reflections-${devotional.title
+      .replace(/\s+/g, "-")
+      .toLowerCase()}.txt`;
+    document.body.appendChild(a);
+    a.click();
+
+    // Clean up
+    setTimeout(() => {
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }, 100);
+
+    // Show download animation
+    const downloadButton = document.querySelector(".download-button");
+    if (downloadButton) {
+      gsap.fromTo(
+        downloadButton,
+        { scale: 1 },
+        { scale: 1.2, duration: 0.2, yoyo: true, repeat: 1 }
+      );
+    }
+  };
+
   if (!devotional) {
     return null;
   }
@@ -258,13 +315,24 @@ const Reflection = () => {
           >
             <FaHeart className="mr-2 text-red-500" /> Reflection
           </h1>
-          <button
-            onClick={handleSave}
-            className={`save-button p-2 rounded-full ${colorClasses.text} hover:bg-black/10 dark:hover:bg-white/10`}
-            aria-label="Save reflections"
-          >
-            <FaSave />
-          </button>
+          <div className="flex space-x-2">
+            <button
+              onClick={downloadReflections}
+              className={`download-button p-2 rounded-full ${colorClasses.text} hover:bg-black/10 dark:hover:bg-white/10`}
+              aria-label="Download reflections"
+              title="Download reflections as text file"
+            >
+              <FaDownload />
+            </button>
+            <button
+              onClick={handleSave}
+              className={`save-button p-2 rounded-full ${colorClasses.text} hover:bg-black/10 dark:hover:bg-white/10`}
+              aria-label="Save reflections"
+              title="Save reflections"
+            >
+              <FaSave />
+            </button>
+          </div>
         </div>
 
         {/* Verse Card */}

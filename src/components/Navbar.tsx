@@ -83,7 +83,7 @@ const Navbar = () => {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-4">
+          <div className="hidden md:flex items-center space-x-2 md:space-x-4">
             {navItems.map((item) => (
               <Link
                 key={item.path}
@@ -126,7 +126,7 @@ const Navbar = () => {
             >
               {isMenuOpen ? <FaTimes /> : <FaBars />}
             </button>
-            <header className="flex items-center justify-center">
+            <header className="flex items-center justify-center ml-2">
               <SignedOut>
                 <div className="bg-purple-100 text-purple-700 p-2 rounded-lg text-sm font-light hover:scale-110 transition-all duration-100 ease-in-out">
                   <SignInButton mode="modal" />
