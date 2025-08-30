@@ -4,6 +4,7 @@ import { gsap } from "gsap";
 import { FaArrowLeft, FaSave, FaHeart } from "react-icons/fa";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useTheme } from "../contexts/ThemeContext";
+import { useBibleVersion } from "../contexts/BibleVersionContext";
 import { getColorClasses } from "../utils/colorUtils";
 import type { Devotional, ReflectionPrompt } from "../types";
 
@@ -11,6 +12,7 @@ const Reflection = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { theme, colorScheme } = useTheme();
+  const { bibleVersion } = useBibleVersion();
   const devotional = location.state?.devotional as Devotional;
   const [reflections, setReflections] = useState<Record<string, string>>({});
   const pageRef = useRef<HTMLDivElement>(null);
@@ -58,6 +60,11 @@ const Reflection = () => {
       );
     }
   }, [devotional, navigate]);
+
+  // Get the verse text for the selected Bible version
+  const getVerseText = (verse: Devotional["verse"]) => {
+    return verse.text[bibleVersion] || verse.text[verse.defaultVersion];
+  };
 
   const handleReflectionChange = (promptId: string, value: string) => {
     const updatedReflections = { ...reflections, [promptId]: value };
@@ -133,10 +140,10 @@ const Reflection = () => {
             className={`p-4 mb-4 rounded-lg ${colorClasses.lightBg}/20 dark:bg-gray-600/30`}
           >
             <p className="italic text-gray-700 dark:text-gray-300 mb-2">
-              "{devotional.verse.text}"
+              "{getVerseText(devotional.verse)}"
             </p>
             <p className={`font-semibold ${colorClasses.text}`}>
-              - {devotional.verse.reference} ({devotional.verse.version})
+              - {devotional.verse.reference} ({bibleVersion})
             </p>
           </div>
         </div>

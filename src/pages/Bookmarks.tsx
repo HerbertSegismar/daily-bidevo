@@ -107,7 +107,7 @@ const Bookmarks = () => {
       <div className="max-w-4xl mx-auto">
         <h1
           ref={titleRef}
-          className={`text-3xl font-bold ${colorClasses.text} dark:text-purple-300 mb-8 flex items-center`}
+          className={`text-3xl font-bold ${colorClasses.text} dark:text-purple-500 mb-8 flex items-center`}
         >
           <FaBookmark className="mr-3 text-red-500" />
           Bookmarked Devotionals

@@ -3,12 +3,14 @@ import { useRef, useEffect, useState } from "react";
 import { gsap } from "gsap";
 import { FaCalendar, FaBookOpen, FaTimes } from "react-icons/fa";
 import { useTheme } from "../contexts/ThemeContext";
+import { useBibleVersion } from "../contexts/BibleVersionContext";
 import { devotionals } from "../data/devotionals";
 import { getColorClasses } from "../utils/colorUtils";
 import type { Devotional } from "../types";
 
 const Devotionals = () => {
   const { theme, colorScheme } = useTheme();
+  const { bibleVersion } = useBibleVersion();
   const pageRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const cardsRef = useRef<HTMLDivElement>(null);
@@ -77,6 +79,11 @@ const Devotionals = () => {
     } else {
       setSelectedDevotional(null);
     }
+  };
+
+  // Get the verse text for the selected Bible version
+  const getVerseText = (verse: Devotional["verse"]) => {
+    return verse.text[bibleVersion] || verse.text[verse.defaultVersion];
   };
 
   return (
@@ -160,11 +167,10 @@ const Devotionals = () => {
                 className={`p-4 mb-6 rounded-lg ${colorClasses.lightBg}/20 dark:bg-gray-600/30`}
               >
                 <p className="italic text-gray-700 dark:text-gray-300 mb-2">
-                  "{selectedDevotional.verse.text}"
+                  "{getVerseText(selectedDevotional.verse)}"
                 </p>
                 <p className={`font-semibold ${colorClasses.text}`}>
-                  - {selectedDevotional.verse.reference} (
-                  {selectedDevotional.verse.version})
+                  - {selectedDevotional.verse.reference} ({bibleVersion})
                 </p>
               </div>
 

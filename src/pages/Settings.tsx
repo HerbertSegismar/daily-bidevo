@@ -3,6 +3,7 @@ import { useRef, useEffect, useState } from "react";
 import { gsap } from "gsap";
 import { FaBell, FaMoon, FaPalette, FaFont } from "react-icons/fa";
 import { useTheme, type ColorScheme } from "../contexts/ThemeContext";
+import { useBibleVersion } from "../contexts/BibleVersionContext";
 
 const Settings = () => {
   const pageRef = useRef<HTMLDivElement>(null);
@@ -13,19 +14,12 @@ const Settings = () => {
     return saved ? JSON.parse(saved) : true;
   });
   const { theme, colorScheme, toggleTheme, setColorScheme } = useTheme();
-  const [bibleVersion, setBibleVersion] = useState(() => {
-    return localStorage.getItem("bibleVersion") || "NIV";
-  });
+  const { bibleVersion, setBibleVersion } = useBibleVersion();
 
   useEffect(() => {
     // Save notifications preference
     localStorage.setItem("notifications", JSON.stringify(notifications));
   }, [notifications]);
-
-  useEffect(() => {
-    // Save Bible version preference
-    localStorage.setItem("bibleVersion", bibleVersion);
-  }, [bibleVersion]);
 
   useEffect(() => {
     if (pageRef.current) {

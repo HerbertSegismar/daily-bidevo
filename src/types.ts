@@ -1,22 +1,5 @@
 import type { JSX } from "react";
 
-export interface BibleVerse {
-  text: string;
-  reference: string;
-  version: string;
-}
-
-export interface Devotional {
-  id: string;
-  date: string;
-  verse: BibleVerse;
-  title: string;
-  content: string;
-  prayer: string;
-  readingPlan: string;
-  reflection?: ReflectionPrompt[];
-}
-
 export interface NavItem {
   label: string;
   path: string;
@@ -28,3 +11,22 @@ export interface ReflectionPrompt {
   question: string;
   placeholder: string;
 }
+
+export interface Verse {
+  text: Record<string, string>; // Key: version, Value: text
+  reference: string;
+  defaultVersion: string;
+}
+
+export interface Devotional {
+  id: string;
+  date: string;
+  verse: Verse;
+  title: string;
+  content: string;
+  prayer: string;
+  readingPlan: string;
+  reflection: ReflectionPrompt[];
+}
+
+export type ColorScheme = "purple" | "green" | "red" | "indigo";

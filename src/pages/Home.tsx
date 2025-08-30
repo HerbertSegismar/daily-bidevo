@@ -10,6 +10,7 @@ import {
 import { gsap } from "gsap";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "../contexts/ThemeContext";
+import { useBibleVersion } from "../contexts/BibleVersionContext";
 import { devotionals } from "../data/devotionals";
 import { getColorClasses } from "../utils/colorUtils";
 import type { Devotional } from "../types";
@@ -17,6 +18,7 @@ import type { Devotional } from "../types";
 const Home = () => {
   const navigate = useNavigate();
   const { theme, colorScheme } = useTheme();
+  const { bibleVersion } = useBibleVersion(); // Get the selected Bible version
   const [currentDevotional, setCurrentDevotional] = useState<Devotional | null>(
     null
   );
@@ -91,10 +93,13 @@ const Home = () => {
 
     // Check if the Web Share API is available
     if (navigator.share && currentDevotional) {
+      // Get the verse text for the current Bible version
+      const verseText = currentDevotional.verse.text[bibleVersion];
+
       navigator
         .share({
           title: currentDevotional.title,
-          text: currentDevotional.verse.text,
+          text: verseText, // Use the version-specific text
           url: window.location.href,
         })
         .catch((error) => {
@@ -123,6 +128,9 @@ const Home = () => {
       </div>
     );
   }
+
+  // Get the verse text for the current Bible version
+  const verseText = currentDevotional.verse.text[bibleVersion];
 
   return (
     <div
@@ -155,11 +163,11 @@ const Home = () => {
               </h2>
             </div>
             <p className="text-gray-700 dark:text-gray-300 italic mb-2">
-              "{currentDevotional.verse.text}"
+              "{verseText}" {/* Use the version-specific text */}
             </p>
             <p className={`text-right ${colorClasses.text} font-medium`}>
-              {currentDevotional.verse.reference} (
-              {currentDevotional.verse.version})
+              {currentDevotional.verse.reference} ({bibleVersion}){" "}
+              {/* Use the context version */}
             </p>
           </div>
 

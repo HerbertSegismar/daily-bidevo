@@ -6,9 +6,15 @@ export const devotionals: Devotional[] = [
     id: "1",
     date: new Date().toDateString(),
     verse: {
-      text: "For I know the plans I have for you, declares the Lord, plans to prosper you and not to harm you, plans to give you hope and a future.",
+      text: {
+        NIV: "For I know the plans I have for you, declares the Lord, plans to prosper you and not to harm you, plans to give you hope and a future.",
+        ESV: "For I know the plans I have for you, declares the Lord, plans for welfare and not for evil, to give you a future and a hope.",
+        KJV: "For I know the thoughts that I think toward you, saith the Lord, thoughts of peace, and not of evil, to give you an expected end.",
+        NKJV: "For I know the thoughts that I think toward you, says the Lord, thoughts of peace and not of evil, to give you a future and a hope.",
+        NASB: "For I know the plans that I have for you,' declares the Lord, 'plans for prosperity and not for disaster, to give you a future and a hope.",
+      },
       reference: "Jeremiah 29:11",
-      version: "NIV",
+      defaultVersion: "NIV",
     },
     title: "God's Plans for You",
     content: `When life feels uncertain or challenging, it's comforting to remember that God has a plan for each of us. This verse from Jeremiah reminds us that even when we can't see the way forward, God is working behind the scenes for our good.
@@ -42,9 +48,15 @@ export const devotionals: Devotional[] = [
     id: "2",
     date: new Date(Date.now() - 86400000).toDateString(),
     verse: {
-      text: "Trust in the Lord with all your heart and lean not on your own understanding; in all your ways submit to him, and he will make your paths straight.",
+      text: {
+        NIV: "Trust in the Lord with all your heart and lean not on your own understanding; in all your ways submit to him, and he will make your paths straight.",
+        ESV: "Trust in the Lord with all your heart, and do not lean on your own understanding. In all your ways acknowledge him, and he will make straight your paths.",
+        KJV: "Trust in the Lord with all thine heart; and lean not unto thine own understanding. In all thy ways acknowledge him, and he shall direct thy paths.",
+        NKJV: "Trust in the Lord with all your heart, and lean not on your own understanding; In all your ways acknowledge Him, and He shall direct your paths.",
+        NASB: "Trust in the Lord with all your heart and do not lean on your own understanding. In all your ways acknowledge Him, and He will make your paths straight.",
+      },
       reference: "Proverbs 3:5-6",
-      version: "NIV",
+      defaultVersion: "NIV",
     },
     title: "Trust in the Lord",
     content: `Trusting God completely is one of the most challenging yet rewarding aspects of our faith journey. It requires letting go of our need to understand everything and instead relying on God's infinite wisdom.
@@ -77,9 +89,15 @@ export const devotionals: Devotional[] = [
     id: "3",
     date: new Date(Date.now() - 172800000).toDateString(),
     verse: {
-      text: "The Lord is my shepherd, I lack nothing. He makes me lie down in green pastures, he leads me beside quiet waters, he refreshes my soul.",
+      text: {
+        NIV: "The Lord is my shepherd, I lack nothing. He makes me lie down in green pastures, he leads me beside quiet waters, he refreshes my soul.",
+        ESV: "The Lord is my shepherd; I shall not want. He makes me lie down in green pastures. He leads me beside still waters. He restores my soul.",
+        KJV: "The Lord is my shepherd; I shall not want. He maketh me to lie down in green pastures: he leadeth me beside the still waters. He restoreth my soul.",
+        NKJV: "The Lord is my shepherd; I shall not want. He makes me to lie down in green pastures; He leads me beside the still waters. He restores my soul.",
+        NASB: "The Lord is my shepherd, I will not be in need. He has me lie down in green pastures; He leads me beside quiet waters. He restores my soul.",
+      },
       reference: "Psalm 23:1-3",
-      version: "NIV",
+      defaultVersion: "NIV",
     },
     title: "The Good Shepherd",
     content: `In seasons of weariness or want, Psalm 23 reminds us of God's faithful provision and care. Like a shepherd tending his sheep, God guides us to places of rest and renewal. He knows exactly what we need—even when we don't recognize it ourselves.
@@ -112,9 +130,15 @@ export const devotionals: Devotional[] = [
     id: "4",
     date: new Date(Date.now() - 259200000).toDateString(),
     verse: {
-      text: "Do not be anxious about anything, but in every situation, by prayer and petition, with thanksgiving, present your requests to God.",
+      text: {
+        NIV: "Do not be anxious about anything, but in every situation, by prayer and petition, with thanksgiving, present your requests to God.",
+        ESV: "Do not be anxious about anything, but in everything by prayer and supplication with thanksgiving let your requests be made known to God.",
+        KJV: "Be careful for nothing; but in every thing by prayer and supplication with thanksgiving let your requests be made known unto God.",
+        NKJV: "Be anxious for nothing, but in everything by prayer and supplication, with thanksgiving, let your requests be made known to God.",
+        NASB: "Do not be anxious about anything, but in everything by prayer and pleading with thanksgiving let your requests be made known to God.",
+      },
       reference: "Philippians 4:6",
-      version: "NIV",
+      defaultVersion: "NIV",
     },
     title: "Peace Beyond Understanding",
     content: `Anxiety is a common human experience, but God invites us to exchange our worries for his peace. This verse doesn't suggest we ignore real concerns, but rather bring them intentionally to God through prayer.
@@ -148,9 +172,15 @@ export const devotionals: Devotional[] = [
     id: "5",
     date: new Date(Date.now() - 345600000).toDateString(),
     verse: {
-      text: "But those who hope in the Lord will renew their strength. They will soar on wings like eagles; they will run and not grow weary, they will walk and not be faint.",
+      text: {
+        NIV: "But those who hope in the Lord will renew their strength. They will soar on wings like eagles; they will run and not grow weary, they will walk and not be faint.",
+        ESV: "But they who wait for the Lord shall renew their strength; they shall mount up with wings like eagles; they shall run and not be weary; they shall walk and not faint.",
+        KJV: "But they that wait upon the Lord shall renew their strength; they shall mount up with wings as eagles; they shall run, and not be weary; and they shall walk, and not faint.",
+        NKJV: "But those who wait on the Lord shall renew their strength; They shall mount up with wings like eagles, They shall run and not be weary, They shall walk and not faint.",
+        NASB: "Yet those who wait for the Lord will gain new strength; They will mount up with wings like eagles, They will run and not get tired, They will walk and not become weary.",
+      },
       reference: "Isaiah 40:31",
-      version: "NIV",
+      defaultVersion: "NIV",
     },
     title: "Renewed Strength",
     content: `Waiting on God isn't passive—it's an active posture of trust and expectation. This promise isn't for those who rely on their own strength, but for those who acknowledge their dependence on God.
@@ -185,9 +215,15 @@ export const devotionals: Devotional[] = [
     id: "6",
     date: new Date(Date.now() - 432000000).toDateString(),
     verse: {
-      text: "Be still, and know that I am God; I will be exalted among the nations, I will be exalted in the earth.",
+      text: {
+        NIV: "Be still, and know that I am God; I will be exalted among the nations, I will be exalted in the earth.",
+        ESV: "Be still, and know that I am God. I will be exalted among the nations, I will be exalted in the earth!",
+        KJV: "Be still, and know that I am God: I will be exalted among the heathen, I will be exalted in the earth.",
+        NKJV: "Be still, and know that I am God; I will be exalted among the nations, I will be exalted in the earth!",
+        NASB: "Cease striving and know that I am God; I will be exalted among the nations, I will be exalted on the earth.",
+      },
       reference: "Psalm 46:10",
-      version: "NIV",
+      defaultVersion: "NIV",
     },
     title: "The Power of Stillness",
     content: `In our noisy, busy world, God invites us to purposeful stillness. This isn't merely about physical quietness, but about acknowledging God's sovereignty in every circumstance.
@@ -221,9 +257,15 @@ export const devotionals: Devotional[] = [
     id: "7",
     date: new Date(Date.now() - 518400000).toDateString(),
     verse: {
-      text: "Therefore, if anyone is in Christ, the new creation has come: The old has gone, the new is here!",
+      text: {
+        NIV: "Therefore, if anyone is in Christ, the new creation has come: The old has gone, the new is here!",
+        ESV: "Therefore, if anyone is in Christ, he is a new creation. The old has passed away; behold, the new has come.",
+        KJV: "Therefore if any man be in Christ, he is a new creature: old things are passed away; behold, all things are become new.",
+        NKJV: "Therefore, if anyone is in Christ, he is a new creation; old things have passed away; behold, all things have become new.",
+        NASB: "Therefore if anyone is in Christ, this person is a new creation; the old things passed away; behold, new things have come.",
+      },
       reference: "2 Corinthians 5:17",
-      version: "NIV",
+      defaultVersion: "NIV",
     },
     title: "Made New",
     content: `This verse proclaims the transformative power of Christ's redemption. Being "in Christ" isn't about external behavior modification but about fundamental identity change.
@@ -247,7 +289,7 @@ export const devotionals: Devotional[] = [
       },
       {
         id: "7-3",
-        question: "How can you live out your new identity in Christ today?",
+        question: "How can you living out your new identity in Christ today?",
         placeholder: "Consider practical ways to embrace your new nature...",
       },
     ],
