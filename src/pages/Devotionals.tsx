@@ -15,6 +15,7 @@ const Devotionals = () => {
   const [selectedDevotional, setSelectedDevotional] =
     useState<Devotional | null>(null);
   const modalRef = useRef<HTMLDivElement>(null);
+  const modalContentRef = useRef<HTMLDivElement>(null);
 
   const colorClasses = getColorClasses(colorScheme);
 
@@ -47,11 +48,17 @@ const Devotionals = () => {
 
   useEffect(() => {
     if (selectedDevotional && modalRef.current) {
+      // Prevent background scrolling when modal is open
+      document.body.style.overflow = "hidden";
+
       gsap.fromTo(
         modalRef.current,
         { opacity: 0, scale: 0.8 },
         { opacity: 1, scale: 1, duration: 0.5 }
       );
+    } else {
+      // Re-enable scrolling when modal is closed
+      document.body.style.overflow = "auto";
     }
   }, [selectedDevotional]);
 
@@ -126,7 +133,7 @@ const Devotionals = () => {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
           <div
             ref={modalRef}
-            className="relative max-w-2xl w-full bg-white dark:bg-gray-800 rounded-xl shadow-2xl overflow-hidden"
+            className="relative max-w-2xl w-full max-h-[90vh] bg-white dark:bg-gray-800 rounded-xl shadow-2xl flex flex-col"
           >
             <div className={`p-6 ${colorClasses.lightBg} dark:bg-gray-700`}>
               <div className="flex justify-between items-start mb-4">
@@ -148,7 +155,7 @@ const Devotionals = () => {
               </div>
             </div>
 
-            <div className="p-6">
+            <div ref={modalContentRef} className="p-6 overflow-y-auto flex-1">
               <div
                 className={`p-4 mb-6 rounded-lg ${colorClasses.lightBg}/20 dark:bg-gray-600/30`}
               >
