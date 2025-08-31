@@ -1,11 +1,10 @@
-// src/pages/Devotionals.tsx
 import { useRef, useEffect, useState } from "react";
 import { gsap } from "gsap";
 import { FaCalendar, FaBookOpen, FaTimes } from "react-icons/fa";
 import { useTheme } from "../contexts/ThemeContext";
 import { useBibleVersion } from "../contexts/BibleVersionContext";
 import { devotionals } from "../data/devotionals";
-import { getColorClasses } from "../utils/colorUtils";
+import { getColorClasses } from "../contexts/ThemeContext";
 import type { Devotional } from "../types";
 
 const Devotionals = () => {
@@ -108,20 +107,36 @@ const Devotionals = () => {
           {devotionals.map((devotional) => (
             <div
               key={devotional.id}
-              className="bg-white/70 dark:bg-gray-700/70 backdrop-blur-lg rounded-xl shadow-md p-6 border border-white/30 dark:border-gray-600/30 hover:shadow-lg transition-shadow duration-300"
+              className={`backdrop-blur-lg rounded-xl shadow-md p-6 border hover:shadow-lg transition-shadow duration-300 ${
+                theme === "dark"
+                  ? "bg-gray-700/70 border-gray-600/30"
+                  : "bg-white/80 border-white/30"
+              }`}
             >
               <div className="flex items-start justify-between mb-4">
-                <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200">
+                <h2
+                  className={`text-xl font-semibold ${
+                    theme === "dark" ? "text-gray-200" : "text-gray-800"
+                  }`}
+                >
                   {devotional.title}
                 </h2>
                 <div
-                  className={`flex items-center text-sm ${colorClasses.lightBg}/20 dark:bg-gray-500/50 px-2 py-1 rounded-full`}
+                  className={`flex items-center text-sm px-2 py-1 rounded-full ${
+                    theme === "dark"
+                      ? "bg-gray-500/50"
+                      : `${colorClasses.lightBg}`
+                  }`}
                 >
                   <FaCalendar className={`mr-1 ${colorClasses.text}`} />
                   <span className={colorClasses.text}>{devotional.date}</span>
                 </div>
               </div>
-              <p className="text-gray-600 dark:text-gray-300 mb-4">
+              <p
+                className={`mb-4 ${
+                  theme === "dark" ? "text-gray-300" : "text-gray-600"
+                }`}
+              >
                 Verse: {devotional.verse.reference}
               </p>
               <button
@@ -140,9 +155,15 @@ const Devotionals = () => {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
           <div
             ref={modalRef}
-            className="relative max-w-2xl w-full max-h-[90vh] bg-white dark:bg-gray-800 rounded-xl shadow-2xl flex flex-col"
+            className={`relative max-w-2xl w-full max-h-[90vh] rounded-xl shadow-2xl flex flex-col ${
+              theme === "dark" ? "bg-gray-800" : "bg-white"
+            }`}
           >
-            <div className={`p-6 ${colorClasses.lightBg} dark:bg-gray-700`}>
+            <div
+              className={`p-6 ${
+                theme === "dark" ? "bg-gray-700" : colorClasses.lightBg
+              }`}
+            >
               <div className="flex justify-between items-start mb-4">
                 <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-200">
                   {selectedDevotional.title}
@@ -164,7 +185,11 @@ const Devotionals = () => {
 
             <div ref={modalContentRef} className="p-6 overflow-y-auto flex-1">
               <div
-                className={`p-4 mb-6 rounded-lg ${colorClasses.lightBg}/20 dark:bg-gray-600/30`}
+                className={`p-4 mb-6 rounded-lg ${
+                  theme === "dark"
+                    ? "bg-gray-600/30"
+                    : `${colorClasses.lightBg}/20`
+                }`}
               >
                 <p className="italic text-gray-700 dark:text-gray-300 mb-2">
                   "{getVerseText(selectedDevotional.verse)}"
@@ -180,7 +205,11 @@ const Devotionals = () => {
                 </div>
 
                 <div
-                  className={`p-4 rounded-lg ${colorClasses.lightBg}/10 dark:bg-gray-600/20`}
+                  className={`p-4 rounded-lg ${
+                    theme === "dark"
+                      ? "bg-gray-600/20"
+                      : `${colorClasses.lightBg}/10`
+                  }`}
                 >
                   <h3 className={`font-semibold mb-2 ${colorClasses.text}`}>
                     Prayer

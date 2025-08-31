@@ -1,107 +1,185 @@
-// src/pages/Settings.tsx
-import { useRef, useEffect, useState } from "react";
+// src/components/Settings.tsx
+import { useRef, useEffect, useState, useCallback } from "react";
 import { gsap } from "gsap";
-import { FaBell, FaMoon, FaPalette, FaFont } from "react-icons/fa";
-import { useTheme, type ColorScheme } from "../contexts/ThemeContext";
+import { FaBell, FaMoon, FaPalette, FaFont, FaClock } from "react-icons/fa";
+import { useTheme } from "../contexts/ThemeContext";
 import { useBibleVersion } from "../contexts/BibleVersionContext";
 
 const Settings = () => {
   const pageRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const cardsRef = useRef<HTMLDivElement>(null);
+
   const [notifications, setNotifications] = useState(() => {
     const saved = localStorage.getItem("notifications");
-    return saved ? JSON.parse(saved) : true;
+    return saved ? JSON.parse(saved) : false;
   });
-  const { theme, colorScheme, toggleTheme, setColorScheme } = useTheme();
+
+  const [notificationTime, setNotificationTime] = useState(() => {
+    const saved = localStorage.getItem("notificationTime");
+    return saved || "18:23";
+  });
+
+  const { theme, colorScheme, toggleTheme, setColorScheme, colorSchemes } =
+    useTheme();
   const { bibleVersion, setBibleVersion } = useBibleVersion();
 
-  useEffect(() => {
-    // Save notifications preference
-    localStorage.setItem("notifications", JSON.stringify(notifications));
-  }, [notifications]);
-
-  useEffect(() => {
-    if (pageRef.current) {
-      gsap.fromTo(
-        pageRef.current,
-        { opacity: 0 },
-        { opacity: 1, duration: 0.8 }
-      );
+  const requestNotificationPermission = useCallback(async () => {
+    if (!("Notification" in window)) {
+      alert("This browser does not support notifications");
+      return false;
     }
 
-    if (titleRef.current) {
-      gsap.fromTo(
-        titleRef.current,
-        { y: -20, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.6, delay: 0.2 }
-      );
+    if (Notification.permission === "default") {
+      const permission = await Notification.requestPermission();
+      return permission === "granted";
     }
 
-    if (cardsRef.current) {
-      const cards = cardsRef.current.children;
-      gsap.fromTo(
-        cards,
-        { y: 30, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.6, stagger: 0.1, delay: 0.4 }
-      );
+    return Notification.permission === "granted";
+  }, []);
+
+  const showNotification = useCallback(() => {
+    if (Notification.permission === "granted") {
+      const notification = new Notification("Daily Devotional Reminder", {
+        body: "Time for your daily devotional reading!",
+        icon: "/icon-192.png",
+        tag: "daily-devotional",
+      });
+
+      notification.onclick = () => {
+        window.focus();
+        notification.close();
+      };
     }
   }, []);
 
-  const colorSchemes = [
-    {
-      name: "purple" as ColorScheme,
-      light: {
-        from: "from-purple-400",
-        to: "to-blue-300",
-        bg: "bg-gradient-to-r from-purple-400 to-blue-300",
-      },
-      dark: {
-        from: "from-purple-500",
-        to: "to-blue-400",
-        bg: "bg-gradient-to-r from-purple-500 to-blue-400",
-      },
-    },
-    {
-      name: "green" as ColorScheme,
-      light: {
-        from: "from-green-400",
-        to: "to-teal-300",
-        bg: "bg-gradient-to-r from-green-400 to-teal-300",
-      },
-      dark: {
-        from: "from-green-500",
-        to: "to-teal-400",
-        bg: "bg-gradient-to-r from-green-500 to-teal-400",
-      },
-    },
-    {
-      name: "red" as ColorScheme,
-      light: {
-        from: "from-red-400",
-        to: "to-orange-300",
-        bg: "bg-gradient-to-r from-red-400 to-orange-300",
-      },
-      dark: {
-        from: "from-red-500",
-        to: "to-orange-400",
-        bg: "bg-gradient-to-r from-red-500 to-orange-400",
-      },
-    },
-    {
-      name: "indigo" as ColorScheme,
-      light: {
-        from: "from-indigo-400",
-        to: "to-purple-300",
-        bg: "bg-gradient-to-r from-indigo-400 to-purple-300",
-      },
-      dark: {
-        from: "from-indigo-500",
-        to: "to-purple-400",
-        bg: "bg-gradient-to-r from-indigo-500 to-purple-400",
-      },
-    },
-  ];
+  useEffect(() => {
+    localStorage.setItem("notifications", JSON.stringify(notifications));
+    localStorage.setItem("notificationTime", notificationTime);
+
+    const handleNotifications = async () => {
+      if (notifications) {
+        const hasPermission = await requestNotificationPermission();
+        if (!hasPermission) {
+          setNotifications(false);
+          return;
+        }
+
+        const [hours, minutes] = notificationTime.split(":").map(Number);
+        const now = new Date();
+        const triggerTime = new Date(
+          now.getFullYear(),
+          now.getMonth(),
+          now.getDate(),
+          hours,
+          minutes,
+          0
+        );
+
+        if (now > triggerTime) {
+          triggerTime.setDate(triggerTime.getDate() + 1);
+        }
+
+        const timeUntilNotification = triggerTime.getTime() - now.getTime();
+
+        setTimeout(() => {
+          if (notifications && Notification.permission === "granted") {
+            showNotification();
+          }
+        }, timeUntilNotification);
+      }
+    };
+
+    handleNotifications();
+  }, [
+    notifications,
+    notificationTime,
+    requestNotificationPermission,
+    showNotification,
+  ]);
+
+  useEffect(() => {
+    if (!pageRef.current || !titleRef.current || !cardsRef.current) return;
+
+    gsap.fromTo(pageRef.current, { opacity: 0 }, { opacity: 1, duration: 0.8 });
+    gsap.fromTo(
+      titleRef.current,
+      { y: -20, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.6, delay: 0.2 }
+    );
+
+    gsap.fromTo(
+      cardsRef.current.children,
+      { y: 30, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.6, stagger: 0.1, delay: 0.4 }
+    );
+  }, []);
+
+  const SettingCard = ({
+    children,
+    icon: Icon,
+    title,
+    description,
+  }: {
+    children: React.ReactNode;
+    icon: React.ElementType;
+    title: string;
+    description: string;
+  }) => (
+    <div
+      className={`backdrop-blur-lg rounded-xl shadow-md p-6 border ${
+        theme === "dark"
+          ? "bg-gray-700/70 border-gray-600/30"
+          : "bg-white/90 border-white/30"
+      }`}
+    >
+      <div className="flex items-center mb-4">
+        <Icon
+          className={`${
+            theme === "dark" ? "text-purple-400" : "text-purple-700"
+          } mr-3`}
+        />
+        <h2
+          className={`text-xl font-semibold ${
+            theme === "dark" ? "text-purple-200" : "text-gray-900"
+          }`}
+        >
+          {title}
+        </h2>
+      </div>
+      <p
+        className={`${
+          theme === "dark" ? "text-gray-300" : "text-gray-700"
+        } mb-4`}
+      >
+        {description}
+      </p>
+      {children}
+    </div>
+  );
+
+  const ToggleSwitch = ({
+    checked,
+    onChange,
+    label,
+  }: {
+    checked: boolean;
+    onChange: () => void;
+    label: string;
+  }) => (
+    <label className="relative inline-flex items-center cursor-pointer">
+      <input
+        type="checkbox"
+        className="sr-only peer"
+        checked={checked}
+        onChange={onChange}
+      />
+      <div className="w-11 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-700"></div>
+      <span className="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">
+        {label}
+      </span>
+    </label>
+  );
 
   return (
     <div
@@ -115,97 +193,17 @@ const Settings = () => {
       <div className="max-w-4xl mx-auto">
         <h1
           ref={titleRef}
-          className="text-3xl font-bold text-purple-900 dark:text-purple-300 mb-8"
+          className="text-3xl font-bold text-purple-900 dark:text-purple-400 mb-8"
         >
           Settings
         </h1>
 
         <div ref={cardsRef} className="grid grid-cols-1 gap-6">
-          {/* Notifications Setting */}
-          <div className="bg-white/90 dark:bg-gray-700/70 backdrop-blur-lg rounded-xl shadow-md p-6 border border-white/30 dark:border-gray-600/30">
-            <div className="flex items-center mb-4">
-              <FaBell className="text-purple-700 dark:text-purple-400 mr-3" />
-              <h2 className="text-xl font-semibold text-gray-900 dark:text-purple-200">
-                Notifications
-              </h2>
-            </div>
-            <p className="text-gray-700 dark:text-gray-300 mb-4">
-              Receive daily reminders for your devotional time
-            </p>
-            <label className="relative inline-flex items-center cursor-pointer">
-              <input
-                type="checkbox"
-                className="sr-only peer"
-                checked={notifications}
-                onChange={() => setNotifications(!notifications)}
-              />
-              <div className="w-11 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-700"></div>
-              <span className="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">
-                {notifications ? "Enabled" : "Disabled"}
-              </span>
-            </label>
-          </div>
-
-          {/* Dark Mode Setting */}
-          <div className="bg-white/90 dark:bg-gray-700/70 backdrop-blur-lg rounded-xl shadow-md p-6 border border-white/30 dark:border-gray-600/30">
-            <div className="flex items-center mb-4">
-              <FaMoon className="text-purple-700 dark:text-purple-400 mr-3" />
-              <h2 className="text-xl font-semibold text-gray-900 dark:text-purple-200">
-                Dark Mode
-              </h2>
-            </div>
-            <p className="text-gray-700 dark:text-gray-300 mb-4">
-              Switch to a darker color scheme for evening reading
-            </p>
-            <label className="relative inline-flex items-center cursor-pointer">
-              <input
-                type="checkbox"
-                className="sr-only peer"
-                checked={theme === "dark"}
-                onChange={toggleTheme}
-              />
-              <div className="w-11 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-700"></div>
-              <span className="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">
-                {theme === "dark" ? "Enabled" : "Disabled"}
-              </span>
-            </label>
-          </div>
-
-          {/* Bible Version Setting */}
-          <div className="bg-white/90 dark:bg-gray-700/70 backdrop-blur-lg rounded-xl shadow-md p-6 border border-white/30 dark:border-gray-600/30">
-            <div className="flex items-center mb-4">
-              <FaFont className="text-purple-700 dark:text-purple-400 mr-3" />
-              <h2 className="text-xl font-semibold text-gray-900 dark:text-purple-200">
-                Bible Version
-              </h2>
-            </div>
-            <p className="text-gray-700 dark:text-gray-300 mb-4">
-              Select your preferred Bible translation
-            </p>
-            <select
-              value={bibleVersion}
-              onChange={(e) => setBibleVersion(e.target.value)}
-              className="bg-white dark:bg-gray-600/80 border border-gray-400 dark:border-gray-500 text-gray-900 dark:text-gray-100 text-sm rounded-lg focus:ring-purple-700 focus:border-purple-700 block w-full p-2.5"
-            >
-              <option value="NIV">New International Version (NIV)</option>
-              <option value="ESV">English Standard Version (ESV)</option>
-              <option value="KJV">King James Version (KJV)</option>
-              <option value="NKJV">New King James Version (NKJV)</option>
-              <option value="NASB">New American Standard Bible (NASB)</option>
-            </select>
-          </div>
-
-          {/* Theme Color Setting */}
-          <div className="bg-white/90 dark:bg-gray-700/70 backdrop-blur-lg rounded-xl shadow-md p-6 border border-white/30 dark:border-gray-600/30">
-            <div className="flex items-center mb-4">
-              <FaPalette className="text-purple-700 dark:text-purple-400 mr-3" />
-              <h2 className="text-xl font-semibold text-gray-900 dark:text-purple-200">
-                Theme Color
-              </h2>
-            </div>
-            <p className="text-gray-700 dark:text-gray-300 mb-4">
-              Choose a color scheme that suits your preference
-            </p>
+          <SettingCard
+            icon={FaPalette}
+            title="Theme Color"
+            description="Choose a color scheme that suits your preference"
+          >
             <div className="flex space-x-3">
               {colorSchemes.map((scheme) => {
                 const colorVariant =
@@ -226,7 +224,69 @@ const Settings = () => {
                 );
               })}
             </div>
-          </div>
+          </SettingCard>
+          <SettingCard
+            icon={FaBell}
+            title="Notifications"
+            description="Receive daily reminders for your devotional time"
+          >
+            <ToggleSwitch
+              checked={notifications}
+              onChange={() => setNotifications(!notifications)}
+              label={notifications ? "Enabled" : "Disabled"}
+            />
+            {notifications && (
+              <div className="mt-4 flex items-center">
+                <FaClock className="text-purple-700 dark:text-purple-400 mr-3" />
+                <label className="text-gray-700 dark:text-gray-300 mr-2">
+                  Time:
+                </label>
+                <input
+                  type="time"
+                  value={notificationTime}
+                  onChange={(e) => setNotificationTime(e.target.value)}
+                  className="bg-white dark:bg-gray-600/80 border border-gray-400 dark:border-gray-500 text-gray-900 dark:text-gray-100 text-sm rounded-lg focus:ring-purple-700 focus:border-purple-700 block p-2.5"
+                />
+              </div>
+            )}
+            <div className="mt-4 text-sm text-gray-600 dark:text-gray-400">
+              {Notification.permission === "granted"
+                ? "Notification permission granted"
+                : Notification.permission === "denied"
+                ? "Notification permission denied. Please enable in browser settings."
+                : "Notification permission will be requested when enabled."}
+            </div>
+          </SettingCard>
+
+          <SettingCard
+            icon={FaMoon}
+            title="Dark Mode"
+            description="Switch to a darker color scheme for evening reading"
+          >
+            <ToggleSwitch
+              checked={theme === "dark"}
+              onChange={toggleTheme}
+              label={theme === "dark" ? "Enabled" : "Disabled"}
+            />
+          </SettingCard>
+
+          <SettingCard
+            icon={FaFont}
+            title="Bible Version"
+            description="Select your preferred Bible translation"
+          >
+            <select
+              value={bibleVersion}
+              onChange={(e) => setBibleVersion(e.target.value)}
+              className="bg-white dark:bg-gray-600/80 border border-gray-400 dark:border-gray-500 text-gray-900 dark:text-gray-100 text-sm rounded-lg focus:ring-purple-700 focus:border-purple-700 block w-full p-2.5"
+            >
+              <option value="NIV">New International Version (NIV)</option>
+              <option value="ESV">English Standard Version (ESV)</option>
+              <option value="KJV">King James Version (KJV)</option>
+              <option value="NKJV">New King James Version (NKJV)</option>
+              <option value="NASB">New American Standard Bible (NASB)</option>
+            </select>
+          </SettingCard>
         </div>
       </div>
     </div>

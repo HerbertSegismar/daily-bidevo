@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 import { useTheme } from "../contexts/ThemeContext";
 import { useBibleVersion } from "../contexts/BibleVersionContext";
 import { devotionals } from "../data/devotionals";
-import { getColorClasses } from "../utils/colorUtils";
+import { getColorClasses } from "../contexts/ThemeContext";
 import type { Devotional } from "../types";
 
 const Home = () => {
@@ -35,6 +35,9 @@ const Home = () => {
   useEffect(() => {
     setCurrentDevotional(devotionals[currentDevotionalIndex]);
 
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("/sw.js");
+    }
     // Check if current devotional is bookmarked
     if (devotionals[currentDevotionalIndex]) {
       const bookmarks = JSON.parse(localStorage.getItem("bookmarks") || "[]");
@@ -171,7 +174,11 @@ const Home = () => {
         {/* Main devotional card with glass effect */}
         <div
           ref={cardRef}
-          className="bg-white/70 dark:bg-gray-700/70 backdrop-blur-lg rounded-2xl shadow-lg overflow-hidden mb-6 relative border border-white/30 dark:border-gray-600/30"
+          className={`backdrop-blur-lg rounded-2xl shadow-lg overflow-hidden mb-6 relative border ${
+            theme === "dark"
+              ? "bg-gray-700/70 border-gray-600/30"
+              : "bg-white/90 border-white/30"
+          }`}
         >
           {/* Date ribbon */}
           <div
@@ -182,14 +189,21 @@ const Home = () => {
 
           <div className="p-6">
             {/* Verse section */}
-            <div ref={verseRef} className="mb-6">
+            <div
+              ref={verseRef}
+              className={`mb-6 ${
+                theme === "dark" ? "text-gray-200" : "text-gray-800"
+              }`}
+            >
               <div className="flex items-start mb-2">
                 <FaBook className={`${colorClasses.text} mt-1 mr-2`} />
-                <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200">
-                  Today's Verse
-                </h2>
+                <h2 className="text-lg font-semibold">Today's Verse</h2>
               </div>
-              <p className="text-gray-700 dark:text-gray-300 italic mb-2">
+              <p
+                className={`mb-2 italic ${
+                  theme === "dark" ? "text-gray-400" : "text-gray-600"
+                }`}
+              >
                 "{verseText}"
               </p>
               <p className={`text-right ${colorClasses.text} font-medium`}>
@@ -202,7 +216,11 @@ const Home = () => {
               <h2 className={`text-xl font-bold ${colorClasses.text} mb-3`}>
                 {currentDevotional.title}
               </h2>
-              <div className="text-gray-700 dark:text-gray-300 leading-relaxed space-y-4">
+              <div
+                className={`leading-relaxed space-y-4 ${
+                  theme === "dark" ? "text-gray-200" : "text-gray-800"
+                }`}
+              >
                 {currentDevotional.content
                   .split("\n\n")
                   .map((paragraph, index) => (
@@ -214,21 +232,33 @@ const Home = () => {
             {/* Prayer section */}
             <div
               ref={prayerRef}
-              className={`${colorClasses.lightBg}/70 dark:bg-gray-600/70 backdrop-blur-sm rounded-lg p-4 mb-6 border ${colorClasses.lightBorder}/30 dark:border-gray-500/30`}
+              className={`backdrop-blur-sm rounded-lg p-4 mb-6 border ${
+                theme === "dark"
+                  ? "bg-gray-600/70 border-gray-500/30"
+                  : `${colorClasses.lightBg}/70 ${colorClasses.lightBorder}/30`
+              }`}
             >
               <div className="flex items-start mb-2">
                 <FaPrayingHands className={`${colorClasses.text} mt-1 mr-2`} />
-                <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200">
+                <h3
+                  className={`text-lg font-semibold ${
+                    theme === "dark" ? "text-gray-200" : "text-gray-800"
+                  }`}
+                >
                   Prayer
                 </h3>
               </div>
-              <p className="text-gray-700 dark:text-gray-300 italic">
+              <p
+                className={`italic ${
+                  theme === "dark" ? "text-gray-400" : "text-gray-600"
+                }`}
+              >
                 "{currentDevotional.prayer}"
               </p>
             </div>
 
             {/* Reading plan */}
-            <div className="text-sm text-gray-600 dark:text-gray-400 border-t border-gray-200/50 dark:border-gray-600/50 pt-4">
+            <div className="text-sm text-gray-400 border-t border-gray-200/50 dark:border-gray-600/50 pt-4">
               <p>
                 Today's Reading:{" "}
                 <span className={`font-medium ${colorClasses.text}`}>
@@ -242,7 +272,11 @@ const Home = () => {
           <div className="absolute top-4 right-4 flex space-x-2">
             <button
               onClick={handleBookmark}
-              className="p-2 bg-white/80 dark:bg-gray-600/80 backdrop-blur-sm rounded-full shadow-md border border-white/30 dark:border-gray-500/30"
+              className={`p-2 backdrop-blur-sm rounded-full shadow-md border ${
+                theme === "dark"
+                  ? "bg-gray-600/80 border-gray-500/30"
+                  : "bg-white/80 border-white/30"
+              }`}
               aria-label="Bookmark devotional"
             >
               <FaBookmark
@@ -255,7 +289,11 @@ const Home = () => {
             </button>
             <button
               onClick={handleShare}
-              className="p-2 bg-white/80 dark:bg-gray-600/80 backdrop-blur-sm rounded-full shadow-md border border-white/30 dark:border-gray-500/30"
+              className={`p-2 backdrop-blur-sm rounded-full shadow-md border ${
+                theme === "dark"
+                  ? "bg-gray-600/80 border-gray-500/30"
+                  : "bg-white/80 border-white/30"
+              }`}
               aria-label="Share devotional"
             >
               <FaShare className={`share-icon ${colorClasses.text}`} />
@@ -267,7 +305,11 @@ const Home = () => {
         <div className="flex justify-between">
           <button
             onClick={handleReflection}
-            className="px-4 py-2 bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm rounded-full shadow-md text-gray-700 dark:text-gray-200 font-medium flex items-center border border-white/30 dark:border-gray-600/30"
+            className={`px-4 py-2 backdrop-blur-sm rounded-full shadow-md font-medium flex items-center border ${
+              theme === "dark"
+                ? "bg-gray-700/80 border-gray-600/30 text-gray-200"
+                : "bg-white/80 border-white/30 text-gray-700"
+            }`}
           >
             <FaHeart className="mr-2 text-red-500" /> Reflection
           </button>
@@ -280,7 +322,13 @@ const Home = () => {
         </div>
 
         {/* Progress indicator */}
-        <div className="mt-6 bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm rounded-full shadow-inner p-1 border border-white/30 dark:border-gray-600/30">
+        <div
+          className={`mt-6 backdrop-blur-sm rounded-full shadow-inner p-1 border ${
+            theme === "dark"
+              ? "bg-gray-700/80 border-gray-600/30"
+              : "bg-white/80 border-white/30"
+          }`}
+        >
           <div
             className={`bg-gradient-to-r ${colorClasses.gradient} h-2 rounded-full`}
             style={{

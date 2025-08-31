@@ -23,7 +23,7 @@ const Footer = () => {
     >
       {/* Content container with relative positioning */}
       <div className="container relative z-10 mx-auto px-4">
-        <div className="flex flex-col md:flex-row justify-between items-center relative">
+        <div className="flex flex-col justify-between items-center text-center relative gap-4">
           <div className="mb-4 md:mb-0">
             <h3 className="text-lg font-bold text-purple-800">
               Daily Bible Devotional
@@ -33,12 +33,16 @@ const Footer = () => {
             </p>
           </div>
           <div>
-            <img src="/ChristIsRisen.svg" alt="crown" className="w-[50vw] mb-5 md:w-[30vw]" />
+            <img
+              src="/ChristIsRisen.svg"
+              alt="crown"
+              className="w-[50vw] mb-5 md:w-[30vw]"
+            />
           </div>
           <div className="flex items-center space-x-4">
             <p className="text-sm text-gray-600">
-              Made With L<FaHeart className="inline text-red-500" />ve For
-              Believers Worldwide.
+              Made With L<FaHeart className="inline text-red-500" />
+              VE For All Believers Worldwide.
             </p>
           </div>
         </div>

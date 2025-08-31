@@ -12,7 +12,7 @@ import {
 import { useNavigate, useLocation } from "react-router-dom";
 import { useTheme } from "../contexts/ThemeContext";
 import { useBibleVersion } from "../contexts/BibleVersionContext";
-import { getColorClasses } from "../utils/colorUtils";
+import { getColorClasses } from "../contexts/ThemeContext";
 import type { Devotional, ReflectionPrompt } from "../types";
 
 const RichTextEditor = ({
@@ -24,6 +24,7 @@ const RichTextEditor = ({
   onChange: (value: string) => void;
   placeholder: string;
 }) => {
+  const { theme } = useTheme();
   const [isBold, setIsBold] = useState(false);
   const [isItalic, setIsItalic] = useState(false);
   const [isUnderline, setIsUnderline] = useState(false);
@@ -80,16 +81,30 @@ const RichTextEditor = ({
   };
 
   return (
-    <div className="border border-gray-200 dark:border-gray-600 rounded-lg overflow-hidden">
+    <div
+      className={`border rounded-lg overflow-hidden ${
+        theme === "dark" ? "border-gray-600" : "border-gray-200"
+      }`}
+    >
       {/* Toolbar */}
-      <div className="flex items-center p-2 bg-gray-100 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600">
+      <div
+        className={`flex items-center p-2 border-b ${
+          theme === "dark"
+            ? "bg-gray-700 border-gray-600"
+            : "bg-gray-100 border-gray-200"
+        }`}
+      >
         <button
           type="button"
           onClick={() => applyFormatting("bold")}
           className={`p-2 rounded mr-1 ${
             isBold
-              ? "bg-gray-300 dark:bg-gray-600"
-              : "hover:bg-gray-200 dark:hover:bg-gray-600"
+              ? theme === "dark"
+                ? "bg-gray-600"
+                : "bg-gray-300"
+              : theme === "dark"
+              ? "hover:bg-gray-600"
+              : "hover:bg-gray-200"
           }`}
           aria-label="Bold"
         >
@@ -100,8 +115,12 @@ const RichTextEditor = ({
           onClick={() => applyFormatting("italic")}
           className={`p-2 rounded mr-1 ${
             isItalic
-              ? "bg-gray-300 dark:bg-gray-600"
-              : "hover:bg-gray-200 dark:hover:bg-gray-600"
+              ? theme === "dark"
+                ? "bg-gray-600"
+                : "bg-gray-300"
+              : theme === "dark"
+              ? "hover:bg-gray-600"
+              : "hover:bg-gray-200"
           }`}
           aria-label="Italic"
         >
@@ -112,8 +131,12 @@ const RichTextEditor = ({
           onClick={() => applyFormatting("underline")}
           className={`p-2 rounded ${
             isUnderline
-              ? "bg-gray-300 dark:bg-gray-600"
-              : "hover:bg-gray-200 dark:hover:bg-gray-600"
+              ? theme === "dark"
+                ? "bg-gray-600"
+                : "bg-gray-300"
+              : theme === "dark"
+              ? "hover:bg-gray-600"
+              : "hover:bg-gray-200"
           }`}
           aria-label="Underline"
         >
@@ -125,7 +148,11 @@ const RichTextEditor = ({
       <div className="relative">
         <div
           ref={editorRef}
-          className="w-full min-h-32 p-3 text-gray-700 dark:text-gray-300 bg-white/50 dark:bg-gray-600/50 focus:outline-none resize-none"
+          className={`w-full min-h-32 p-3 focus:outline-none resize-none ${
+            theme === "dark"
+              ? "bg-gray-600/50 text-gray-300"
+              : "bg-white/50 text-gray-700"
+          }`}
           contentEditable
           onInput={handleContentChange}
           onFocus={handleFocus}
@@ -337,18 +364,36 @@ const Reflection = () => {
 
         {/* Verse Card */}
         <div
-          className={`bg-white/70 dark:bg-gray-700/70 backdrop-blur-lg rounded-xl shadow-md p-6 mb-6 border border-white/30 dark:border-gray-600/30`}
+          className={`backdrop-blur-lg rounded-xl shadow-md p-6 mb-6 border ${
+            theme === "dark"
+              ? "bg-gray-700/70 border-gray-600/30"
+              : "bg-white/90 border-white/30"
+          }`}
         >
-          <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">
+          <h2
+            className={`text-lg font-semibold mb-2 ${
+              theme === "dark" ? "text-gray-200" : "text-gray-800"
+            }`}
+          >
             {devotional.title}
           </h2>
-          <p className="text-gray-600 dark:text-gray-300 mb-2">
+          <p
+            className={`mb-2 ${
+              theme === "dark" ? "text-gray-300" : "text-gray-500"
+            }`}
+          >
             {devotional.date}
           </p>
           <div
-            className={`p-4 mb-4 rounded-lg ${colorClasses.lightBg}/20 dark:bg-gray-600/30`}
+            className={`p-4 mb-4 rounded-lg ${
+              theme === "dark" ? "bg-gray-600/30" : `${colorClasses.lightBg}`
+            }`}
           >
-            <p className="italic text-gray-700 dark:text-gray-300 mb-2">
+            <p
+              className={`italic mb-2 ${
+                theme === "dark" ? "text-gray-400" : "text-gray-700"
+              }`}
+            >
               "{getVerseText(devotional.verse)}"
             </p>
             <p className={`font-semibold ${colorClasses.text}`}>
@@ -362,9 +407,15 @@ const Reflection = () => {
           {devotional.reflection?.map((prompt: ReflectionPrompt) => (
             <div
               key={prompt.id}
-              className="bg-white/70 dark:bg-gray-700/70 backdrop-blur-lg rounded-xl shadow-md p-6 border border-white/30 dark:border-gray-600/30"
+              className={`backdrop-blur-lg rounded-xl shadow-md p-6 border ${
+                theme === "dark"
+                  ? "bg-gray-700/70 border-gray-600/30"
+                  : "bg-white/90 border-white/30"
+              }`}
             >
-              <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">
+              <h3 className={`text-lg mb-4 ${
+                theme === "dark" ? "text-gray-200" : "text-gray-600"
+              }`}>
                 {prompt.question}
               </h3>
               <RichTextEditor
@@ -376,10 +427,14 @@ const Reflection = () => {
           ))}
 
           {(!devotional.reflection || devotional.reflection.length === 0) && (
-            <div className="bg-white/70 dark:bg-gray-700/70 backdrop-blur-lg rounded-xl shadow-md p-6 border border-white/30 dark:border-gray-600/30 text-center">
-              <p className="text-gray-600 dark:text-gray-300">
-                No reflection prompts available for this devotional.
-              </p>
+            <div
+              className={`backdrop-blur-lg rounded-xl shadow-md p-6 border text-center ${
+                theme === "dark"
+                  ? "bg-gray-700/70 border-gray-600/30 text-gray-200"
+                  : "bg-white/90 border-white/30 text-gray-500"
+              }`}
+            >
+              <p>No reflection prompts available for this devotional.</p>
             </div>
           )}
         </div>

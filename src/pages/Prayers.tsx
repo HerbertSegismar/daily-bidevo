@@ -1,8 +1,8 @@
-// src/pages/Prayers.tsx
 import { useRef, useEffect, useState } from "react";
 import { gsap } from "gsap";
 import { FaPrayingHands, FaPlus, FaTimes } from "react-icons/fa";
 import { useTheme } from "../contexts/ThemeContext";
+import { getColorClasses } from "../contexts/ThemeContext";
 
 interface Prayer {
   id: number;
@@ -22,41 +22,7 @@ const Prayers = () => {
   const [editingPrayer, setEditingPrayer] = useState<Prayer | null>(null);
   const [formData, setFormData] = useState({ title: "", content: "" });
 
-  // Get color classes based on selected color scheme
-  const getColorClasses = () => {
-    switch (colorScheme) {
-      case "green":
-        return {
-          gradient: "from-green-500 to-teal-400",
-          text: "text-green-700",
-          lightBg: "bg-green-50",
-          lightBorder: "border-green-100",
-        };
-      case "red":
-        return {
-          gradient: "from-red-500 to-orange-400",
-          text: "text-red-700",
-          lightBg: "bg-red-50",
-          lightBorder: "border-red-100",
-        };
-      case "indigo":
-        return {
-          gradient: "from-indigo-500 to-purple-400",
-          text: "text-indigo-700",
-          lightBg: "bg-indigo-50",
-          lightBorder: "border-indigo-100",
-        };
-      default: // purple
-        return {
-          gradient: "from-purple-500 to-blue-400",
-          text: "text-purple-700",
-          lightBg: "bg-purple-50",
-          lightBorder: "border-purple-100",
-        };
-    }
-  };
-
-  const colorClasses = getColorClasses();
+  const colorClasses = getColorClasses(colorScheme);
 
   useEffect(() => {
     // Load prayers from localStorage
@@ -186,9 +152,9 @@ const Prayers = () => {
       <div className="max-w-4xl mx-auto">
         <h1
           ref={titleRef}
-          className={`text-3xl font-bold ${colorClasses.text} dark:text-purple-500 mb-8 flex items-center`}
+          className={`text-3xl font-bold ${colorClasses.text} mb-8 flex items-center`}
         >
-          <FaPrayingHands className="mr-3 text-purple-600" />
+          <FaPrayingHands className={`mr-3 ${colorClasses.text}`} />
           Prayer Journal
         </h1>
 
@@ -207,12 +173,24 @@ const Prayers = () => {
             prayers.map((prayer) => (
               <div
                 key={prayer.id}
-                className="bg-white/70 dark:bg-gray-700/70 backdrop-blur-lg rounded-xl shadow-md p-6 border border-white/30 dark:border-gray-600/30 hover:shadow-lg transition-shadow duration-300"
+                className={`backdrop-blur-lg rounded-xl shadow-md p-6 border hover:shadow-lg transition-shadow duration-300 ${
+                  theme === "dark"
+                    ? "bg-gray-700/70 border-gray-600/30"
+                    : "bg-white/80 border-white/30"
+                }`}
               >
-                <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-3">
+                <h2
+                  className={`text-xl font-semibold mb-3 ${
+                    theme === "dark" ? "text-gray-200" : "text-gray-800"
+                  }`}
+                >
                   {prayer.title}
                 </h2>
-                <p className="text-gray-600 dark:text-gray-300 mb-4 italic">
+                <p
+                  className={`italic mb-4 ${
+                    theme === "dark" ? "text-gray-300" : "text-gray-600"
+                  }`}
+                >
                   "{prayer.content}"
                 </p>
                 <div className="flex justify-between items-center">
@@ -222,13 +200,21 @@ const Prayers = () => {
                   <div className="flex space-x-2">
                     <button
                       onClick={() => handleOpenModal(prayer)}
-                      className={`${colorClasses.lightBg} dark:bg-gray-600 ${colorClasses.text} dark:text-gray-200 px-3 py-1 rounded-full text-xs font-medium`}
+                      className={`${colorClasses.lightBg} ${
+                        theme === "dark" ? "bg-gray-600" : ""
+                      } ${
+                        colorClasses.text
+                      } px-3 py-1 rounded-full text-xs font-medium`}
                     >
                       Edit
                     </button>
                     <button
                       onClick={() => handleDelete(prayer.id)}
-                      className="bg-red-100 dark:bg-red-600 text-red-700 dark:text-red-200 px-3 py-1 rounded-full text-xs font-medium"
+                      className={`${
+                        theme === "dark"
+                          ? "bg-red-600 text-red-200"
+                          : "bg-red-100 text-red-700"
+                      } px-3 py-1 rounded-full text-xs font-medium`}
                     >
                       Delete
                     </button>
@@ -237,7 +223,13 @@ const Prayers = () => {
               </div>
             ))
           ) : (
-            <div className="text-center py-12 text-gray-500 dark:text-gray-400">
+            <div
+              className={`text-center py-12 rounded-xl border ${
+                theme === "dark"
+                  ? "bg-gray-700/70 border-gray-600/30 text-gray-400"
+                  : "bg-white/80 border-white/30 text-gray-500"
+              }`}
+            >
               <FaPrayingHands className="mx-auto text-4xl mb-4" />
               <p>
                 No prayers yet. Click "New Prayer" to add your first prayer.
@@ -250,14 +242,26 @@ const Prayers = () => {
       {/* Modal for adding/editing prayers */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-md w-full p-6">
+          <div
+            className={`rounded-xl shadow-xl max-w-md w-full p-6 ${
+              theme === "dark" ? "bg-gray-800" : "bg-white"
+            }`}
+          >
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200">
+              <h2
+                className={`text-xl font-semibold ${
+                  theme === "dark" ? "text-gray-200" : "text-gray-800"
+                }`}
+              >
                 {editingPrayer ? "Edit Prayer" : "Add New Prayer"}
               </h2>
               <button
                 onClick={handleCloseModal}
-                className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
+                className={
+                  theme === "dark"
+                    ? "text-gray-400 hover:text-gray-300"
+                    : "text-gray-500 hover:text-gray-700"
+                }
               >
                 <FaTimes />
               </button>
@@ -266,7 +270,9 @@ const Prayers = () => {
             <form onSubmit={handleSubmit}>
               <div className="mb-4">
                 <label
-                  className="block text-gray-700 dark:text-gray-300 mb-2"
+                  className={`block mb-2 ${
+                    theme === "dark" ? "text-gray-300" : "text-gray-700"
+                  }`}
                   htmlFor="title"
                 >
                   Prayer Title
@@ -277,14 +283,20 @@ const Prayers = () => {
                   name="title"
                   value={formData.title}
                   onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 dark:bg-gray-700 dark:text-white"
+                  className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 ${
+                    theme === "dark"
+                      ? "border-gray-600 bg-gray-700 text-white focus:ring-purple-500"
+                      : "border-gray-300 bg-white text-gray-800 focus:ring-purple-500"
+                  }`}
                   required
                 />
               </div>
 
               <div className="mb-4">
                 <label
-                  className="block text-gray-700 dark:text-gray-300 mb-2"
+                  className={`block mb-2 ${
+                    theme === "dark" ? "text-gray-300" : "text-gray-700"
+                  }`}
                   htmlFor="content"
                 >
                   Prayer Content
@@ -295,7 +307,11 @@ const Prayers = () => {
                   value={formData.content}
                   onChange={handleInputChange}
                   rows={4}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 dark:bg-gray-700 dark:text-white"
+                  className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 ${
+                    theme === "dark"
+                      ? "border-gray-600 bg-gray-700 text-white focus:ring-purple-500"
+                      : "border-gray-300 bg-white text-gray-800 focus:ring-purple-500"
+                  }`}
                   required
                 />
               </div>
@@ -304,7 +320,11 @@ const Prayers = () => {
                 <button
                   type="button"
                   onClick={handleCloseModal}
-                  className="px-4 py-2 text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100"
+                  className={`px-4 py-2 ${
+                    theme === "dark"
+                      ? "text-gray-300 hover:text-gray-100"
+                      : "text-gray-600 hover:text-gray-800"
+                  }`}
                 >
                   Cancel
                 </button>

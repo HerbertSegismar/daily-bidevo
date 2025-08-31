@@ -15,7 +15,7 @@ import {
   FaCross,
 } from "react-icons/fa";
 import { useTheme } from "../contexts/ThemeContext";
-import { getColorClasses } from "../utils/colorUtils";
+import { getColorClasses } from "../contexts/ThemeContext";
 import type { NavItem } from "../types";
 import {
   SignedIn,
