@@ -1,4 +1,3 @@
-// src/pages/Home.tsx
 import { useState, useEffect, useRef } from "react";
 import {
   FaBook,
@@ -167,132 +166,137 @@ const Home = () => {
           : "bg-gradient-to-b from-blue-50 to-purple-50"
       } p-4 md:p-8`}
     >
-      {/* Main devotional card with glass effect */}
-      <div
-        ref={cardRef}
-        className="bg-white/70 dark:bg-gray-700/70 backdrop-blur-lg rounded-2xl shadow-lg overflow-hidden mb-6 relative border border-white/30 dark:border-gray-600/30"
-      >
-        {/* Date ribbon */}
+      {/* Container to limit width on large screens */}
+      <div className="mx-auto max-w-4xl">
+        {/* Main devotional card with glass effect */}
         <div
-          className={`bg-gradient-to-r ${colorClasses.gradient} text-white py-2 px-4 text-sm font-semibold`}
+          ref={cardRef}
+          className="bg-white/70 dark:bg-gray-700/70 backdrop-blur-lg rounded-2xl shadow-lg overflow-hidden mb-6 relative border border-white/30 dark:border-gray-600/30"
         >
-          {currentDevotional.date}
-        </div>
-
-        <div className="p-6">
-          {/* Verse section */}
-          <div ref={verseRef} className="mb-6">
-            <div className="flex items-start mb-2">
-              <FaBook className={`${colorClasses.text} mt-1 mr-2`} />
-              <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200">
-                Today's Verse
-              </h2>
-            </div>
-            <p className="text-gray-700 dark:text-gray-300 italic mb-2">
-              "{verseText}"
-            </p>
-            <p className={`text-right ${colorClasses.text} font-medium`}>
-              {currentDevotional.verse.reference} ({bibleVersion})
-            </p>
-          </div>
-
-          {/* Devotional content */}
-          <div ref={contentRef} className="mb-6">
-            <h2 className={`text-xl font-bold ${colorClasses.text} mb-3`}>
-              {currentDevotional.title}
-            </h2>
-            <div className="text-gray-700 dark:text-gray-300 leading-relaxed space-y-4">
-              {currentDevotional.content
-                .split("\n\n")
-                .map((paragraph, index) => (
-                  <p key={index}>{paragraph}</p>
-                ))}
-            </div>
-          </div>
-
-          {/* Prayer section */}
+          {/* Date ribbon */}
           <div
-            ref={prayerRef}
-            className={`${colorClasses.lightBg}/70 dark:bg-gray-600/70 backdrop-blur-sm rounded-lg p-4 mb-6 border ${colorClasses.lightBorder}/30 dark:border-gray-500/30`}
+            className={`bg-gradient-to-r ${colorClasses.gradient} text-white py-2 px-4 text-sm font-semibold`}
           >
-            <div className="flex items-start mb-2">
-              <FaPrayingHands className={`${colorClasses.text} mt-1 mr-2`} />
-              <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200">
-                Prayer
-              </h3>
+            {currentDevotional.date}
+          </div>
+
+          <div className="p-6">
+            {/* Verse section */}
+            <div ref={verseRef} className="mb-6">
+              <div className="flex items-start mb-2">
+                <FaBook className={`${colorClasses.text} mt-1 mr-2`} />
+                <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200">
+                  Today's Verse
+                </h2>
+              </div>
+              <p className="text-gray-700 dark:text-gray-300 italic mb-2">
+                "{verseText}"
+              </p>
+              <p className={`text-right ${colorClasses.text} font-medium`}>
+                {currentDevotional.verse.reference} ({bibleVersion})
+              </p>
             </div>
-            <p className="text-gray-700 dark:text-gray-300 italic">
-              "{currentDevotional.prayer}"
-            </p>
+
+            {/* Devotional content */}
+            <div ref={contentRef} className="mb-6">
+              <h2 className={`text-xl font-bold ${colorClasses.text} mb-3`}>
+                {currentDevotional.title}
+              </h2>
+              <div className="text-gray-700 dark:text-gray-300 leading-relaxed space-y-4">
+                {currentDevotional.content
+                  .split("\n\n")
+                  .map((paragraph, index) => (
+                    <p key={index}>{paragraph}</p>
+                  ))}
+              </div>
+            </div>
+
+            {/* Prayer section */}
+            <div
+              ref={prayerRef}
+              className={`${colorClasses.lightBg}/70 dark:bg-gray-600/70 backdrop-blur-sm rounded-lg p-4 mb-6 border ${colorClasses.lightBorder}/30 dark:border-gray-500/30`}
+            >
+              <div className="flex items-start mb-2">
+                <FaPrayingHands className={`${colorClasses.text} mt-1 mr-2`} />
+                <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200">
+                  Prayer
+                </h3>
+              </div>
+              <p className="text-gray-700 dark:text-gray-300 italic">
+                "{currentDevotional.prayer}"
+              </p>
+            </div>
+
+            {/* Reading plan */}
+            <div className="text-sm text-gray-600 dark:text-gray-400 border-t border-gray-200/50 dark:border-gray-600/50 pt-4">
+              <p>
+                Today's Reading:{" "}
+                <span className={`font-medium ${colorClasses.text}`}>
+                  {currentDevotional.readingPlan}
+                </span>
+              </p>
+            </div>
           </div>
 
-          {/* Reading plan */}
-          <div className="text-sm text-gray-600 dark:text-gray-400 border-t border-gray-200/50 dark:border-gray-600/50 pt-4">
-            <p>
-              Today's Reading:{" "}
-              <span className={`font-medium ${colorClasses.text}`}>
-                {currentDevotional.readingPlan}
-              </span>
-            </p>
+          {/* Action buttons */}
+          <div className="absolute top-4 right-4 flex space-x-2">
+            <button
+              onClick={handleBookmark}
+              className="p-2 bg-white/80 dark:bg-gray-600/80 backdrop-blur-sm rounded-full shadow-md border border-white/30 dark:border-gray-500/30"
+              aria-label="Bookmark devotional"
+            >
+              <FaBookmark
+                className={`bookmark-icon ${
+                  bookmarked
+                    ? "text-red-500 fill-current"
+                    : "text-gray-400 dark:text-gray-500"
+                }`}
+              />
+            </button>
+            <button
+              onClick={handleShare}
+              className="p-2 bg-white/80 dark:bg-gray-600/80 backdrop-blur-sm rounded-full shadow-md border border-white/30 dark:border-gray-500/30"
+              aria-label="Share devotional"
+            >
+              <FaShare className={`share-icon ${colorClasses.text}`} />
+            </button>
           </div>
         </div>
 
-        {/* Action buttons */}
-        <div className="absolute top-4 right-4 flex space-x-2">
+        {/* Navigation */}
+        <div className="flex justify-between">
           <button
-            onClick={handleBookmark}
-            className="p-2 bg-white/80 dark:bg-gray-600/80 backdrop-blur-sm rounded-full shadow-md border border-white/30 dark:border-gray-500/30"
-            aria-label="Bookmark devotional"
+            onClick={handleReflection}
+            className="px-4 py-2 bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm rounded-full shadow-md text-gray-700 dark:text-gray-200 font-medium flex items-center border border-white/30 dark:border-gray-600/30"
           >
-            <FaBookmark
-              className={`bookmark-icon ${
-                bookmarked
-                  ? "text-red-500 fill-current"
-                  : "text-gray-400 dark:text-gray-500"
-              }`}
-            />
+            <FaHeart className="mr-2 text-red-500" /> Reflection
           </button>
           <button
-            onClick={handleShare}
-            className="p-2 bg-white/80 dark:bg-gray-600/80 backdrop-blur-sm rounded-full shadow-md border border-white/30 dark:border-gray-500/30"
-            aria-label="Share devotional"
+            onClick={handleNextDevotional}
+            className={`px-4 py-2 bg-gradient-to-r ${colorClasses.gradient} rounded-full shadow-md text-white font-medium flex items-center`}
           >
-            <FaShare className={`share-icon ${colorClasses.text}`} />
+            Next Devotional <span className="ml-2">→</span>
           </button>
         </div>
-      </div>
 
-      {/* Navigation */}
-      <div className="flex justify-between">
-        <button
-          onClick={handleReflection}
-          className="px-4 py-2 bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm rounded-full shadow-md text-gray-700 dark:text-gray-200 font-medium flex items-center border border-white/30 dark:border-gray-600/30"
-        >
-          <FaHeart className="mr-2 text-red-500" /> Reflection
-        </button>
-        <button
-          onClick={handleNextDevotional}
-          className={`px-4 py-2 bg-gradient-to-r ${colorClasses.gradient} rounded-full shadow-md text-white font-medium flex items-center`}
-        >
-          Next Devotional <span className="ml-2">→</span>
-        </button>
+        {/* Progress indicator */}
+        <div className="mt-6 bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm rounded-full shadow-inner p-1 border border-white/30 dark:border-gray-600/30">
+          <div
+            className={`bg-gradient-to-r ${colorClasses.gradient} h-2 rounded-full`}
+            style={{
+              width: `${
+                ((currentDevotionalIndex + 1) / devotionals.length) * 100
+              }%`,
+            }}
+          ></div>
+        </div>
+        <p className="text-center text-xs text-gray-600 dark:text-gray-400 mt-2">
+          {Math.round(
+            ((currentDevotionalIndex + 1) / devotionals.length) * 100
+          )}
+          % through devotionals
+        </p>
       </div>
-
-      {/* Progress indicator */}
-      <div className="mt-6 bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm rounded-full shadow-inner p-1 border border-white/30 dark:border-gray-600/30">
-        <div
-          className={`bg-gradient-to-r ${colorClasses.gradient} h-2 rounded-full`}
-          style={{
-            width: `${
-              ((currentDevotionalIndex + 1) / devotionals.length) * 100
-            }%`,
-          }}
-        ></div>
-      </div>
-      <p className="text-center text-xs text-gray-600 dark:text-gray-400 mt-2">
-        {Math.round(((currentDevotionalIndex + 1) / devotionals.length) * 100)}%
-        through devotionals
-      </p>
     </div>
   );
 };

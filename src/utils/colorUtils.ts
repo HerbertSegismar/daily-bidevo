@@ -1,4 +1,3 @@
-// src/utils/colorUtils.ts
 export const getColorClasses = (colorScheme: string) => {
   switch (colorScheme) {
     case "green":

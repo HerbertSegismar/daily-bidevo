@@ -11,18 +11,26 @@ import {
   FaBars,
   FaTimes,
   FaMoon,
-  FaSun, // Add FaSun icon
+  FaSun,
+  FaCross,
 } from "react-icons/fa";
-import { useTheme } from "../contexts/ThemeContext"; // Import useTheme
+import { useTheme } from "../contexts/ThemeContext";
+import { getColorClasses } from "../utils/colorUtils";
 import type { NavItem } from "../types";
-import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/clerk-react";
+import {
+  SignedIn,
+  SignedOut,
+  SignInButton,
+  UserButton,
+} from "@clerk/clerk-react";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
   const navbarRef = useRef<HTMLDivElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
-  const { theme, toggleTheme } = useTheme(); // Get theme and toggle function
+  const { theme, colorScheme, toggleTheme } = useTheme();
+  const colors = getColorClasses(colorScheme);
 
   const navItems: NavItem[] = [
     { label: "Home", path: "/", icon: <FaHome /> },
@@ -69,19 +77,20 @@ const Navbar = () => {
   return (
     <nav
       ref={navbarRef}
-      className="bg-gradient-to-r from-amber-100 to-amber-600 backdrop-blur-md border-b border-purple-200/30 sticky top-0 z-50 shadow-sm"
+      className={`bg-gradient-to-r ${colors.gradient} backdrop-blur-md border-b ${colors.lightBorder}/30 sticky top-0 z-50 shadow-sm`}
     >
       <div className="container mx-auto px-4 py-3">
         <div className="flex justify-between items-center">
           <Link to="/" className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-gradient-to-r from-purple-600 to-blue-500 rounded-lg flex items-center justify-center">
-              <FaBook className="text-white text-sm" />
+            <div
+              className={`w-8 h-8 bg-gradient-to-r ${colors.gradient} rounded-lg flex items-center justify-center`}
+            >
+              <FaCross className="text-white text-sm" />
             </div>
-            <span className="text-lg md:text-xl font-semibold md:font-bold bg-gradient-to-r from-purple-600 to-blue-500 bg-clip-text text-transparent">
+            <span className="text-lg md:text-xl font-base md:font-semibold text-white">
               Daily Bible Devotional
             </span>
           </Link>
-
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-2">
             {navItems.map((item) => (
@@ -90,8 +99,8 @@ const Navbar = () => {
                 to={item.path}
                 className={`flex items-center justify-center px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
                   location.pathname === item.path
-                    ? "bg-purple-100 text-purple-700 shadow-sm"
-                    : "text-gray-800 hover:text-purple-700 hover:bg-purple-50"
+                    ? `${colors.lightBg} ${colors.text}`
+                    : "text-blue-50 hover:text-purple-700 hover:bg-purple-50"
                 }`}
               >
                 <span className="mr-2">{item.icon}</span>
@@ -102,19 +111,23 @@ const Navbar = () => {
             {/* Theme Toggle Switch */}
             <button
               onClick={toggleTheme}
-              className="p-2 rounded-full bg-purple-100 text-purple-700 hover:bg-purple-200 transition-colors duration-300"
+              className={`p-2 rounded-full ${colors.lightBg} ${
+                colors.text
+              } hover:${colors.lightBg.replace(
+                "50",
+                "200"
+              )} transition-colors duration-300`}
               aria-label="Toggle theme"
             >
               {theme === "dark" ? <FaSun size={18} /> : <FaMoon size={18} />}
             </button>
           </div>
-
           {/* Mobile Menu Button and Theme Toggle */}
           <div className="flex items-center space-x-2">
             {/* Theme Toggle for Mobile */}
             <button
               onClick={toggleTheme}
-              className="md:hidden p-2 rounded-full bg-purple-100 text-purple-700 mr-2"
+              className={`md:hidden p-2 rounded-full ${colors.lightBg} ${colors.text} mr-2`}
               aria-label="Toggle theme"
             >
               {theme === "dark" ? <FaSun size={18} /> : <FaMoon size={18} />}
@@ -122,18 +135,22 @@ const Navbar = () => {
 
             <button
               onClick={toggleMenu}
-              className="md:hidden p-2 rounded-lg bg-purple-100 text-purple-700"
+              className={`md:hidden p-2 rounded-lg ${colors.lightBg} ${colors.text}`}
             >
               {isMenuOpen ? <FaTimes /> : <FaBars />}
             </button>
             <header className="flex items-center justify-center ml-0 md:ml-2">
               <SignedOut>
-                <div className="bg-purple-100 text-purple-700 p-2 rounded-lg text-sm font-light hover:scale-110 transition-all duration-100 ease-in-out">
+                <div
+                  className={`${colors.lightBg} ${colors.text} p-2 rounded-lg text-sm font-light hover:scale-110 transition-all duration-100 ease-in-out`}
+                >
                   <SignInButton mode="modal" />
                 </div>
               </SignedOut>
               <SignedIn>
-                <div className="flex items-center justify-center bg-purple-100 p-1 size-[34px] rounded-lg hover:scale-110 transition-all duration-100 ease-in-out">
+                <div
+                  className={`flex items-center justify-center ${colors.lightBg} p-1 size-[34px] rounded-lg hover:scale-110 transition-all duration-100 ease-in-out`}
+                >
                   <UserButton />
                 </div>
               </SignedIn>
@@ -146,7 +163,9 @@ const Navbar = () => {
           ref={menuRef}
           className="md:hidden overflow-hidden h-0 opacity-0 mt-2"
         >
-          <div className="py-2 space-y-1 bg-white/80 backdrop-blur-md rounded-lg border border-purple-100 shadow-sm">
+          <div
+            className={`py-2 space-y-1 bg-white/80 backdrop-blur-md rounded-lg border ${colors.lightBorder} shadow-sm`}
+          >
             {navItems.map((item) => (
               <Link
                 key={item.path}
@@ -154,7 +173,7 @@ const Navbar = () => {
                 onClick={() => setIsMenuOpen(false)}
                 className={`flex items-center px-4 py-3 text-sm font-medium transition-all duration-300 ${
                   location.pathname === item.path
-                    ? "bg-purple-100 text-purple-700"
+                    ? `${colors.lightBg} ${colors.text}`
                     : "text-gray-600 hover:text-purple-700 hover:bg-purple-50"
                 }`}
               >
