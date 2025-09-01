@@ -220,7 +220,11 @@ const Bookmarks = () => {
               }`}
             >
               <div className="flex justify-between items-start mb-4">
-                <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-200">
+                <h2
+                  className={`text-2xl font-bold ${
+                    theme === "dark" ? "text-gray-200" : "text-gray-800"
+                  }`}
+                >
                   {selectedDevotional.title}
                 </h2>
                 <button
@@ -241,12 +245,14 @@ const Bookmarks = () => {
             <div ref={modalContentRef} className="p-6 overflow-y-auto flex-1">
               <div
                 className={`p-4 mb-6 rounded-lg ${
-                  theme === "dark"
-                    ? "bg-gray-600/30"
-                    : `${colorClasses.lightBg}/20`
+                  theme === "dark" ? "bg-gray-600" : `${colorClasses.lightBg}`
                 }`}
               >
-                <p className="italic text-gray-700 dark:text-gray-300 mb-2">
+                <p
+                  className={`italic mb-2 ${
+                    theme === "dark" ? "text-gray-300" : "text-gray-700"
+                  }`}
+                >
                   "{getVerseText(selectedDevotional.verse)}"
                 </p>
                 <p className={`font-semibold ${colorClasses.text}`}>
@@ -255,7 +261,11 @@ const Bookmarks = () => {
               </div>
 
               <div className="prose dark:prose-invert max-w-none">
-                <div className="text-gray-700 dark:text-gray-300 whitespace-pre-line mb-6">
+                <div
+                  className={`whitespace-pre-line mb-6 ${
+                    theme === "dark" ? "text-gray-300" : "text-gray-700"
+                  }`}
+                >
                   {selectedDevotional.content}
                 </div>
 
@@ -263,19 +273,27 @@ const Bookmarks = () => {
                   className={`p-4 rounded-lg ${
                     theme === "dark"
                       ? "bg-gray-600/20"
-                      : `${colorClasses.lightBg}/10`
+                      : `${colorClasses.lightBg}`
                   }`}
                 >
                   <h3 className={`font-semibold mb-2 ${colorClasses.text}`}>
                     Prayer
                   </h3>
-                  <p className="text-gray-700 dark:text-gray-300 italic">
+                  <p
+                    className={`italic ${
+                      theme === "dark" ? "text-gray-300" : "text-gray-700"
+                    }`}
+                  >
                     {selectedDevotional.prayer}
                   </p>
                 </div>
 
                 <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
-                  <p className="text-gray-600 dark:text-gray-400">
+                  <p
+                    className={`${
+                      theme === "dark" ? "text-gray-400" : "text-gray-600"
+                    }`}
+                  >
                     <span className="font-semibold">Reading Plan:</span>{" "}
                     {selectedDevotional.readingPlan}
                   </p>

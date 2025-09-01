@@ -77,7 +77,7 @@ const Navbar = () => {
   return (
     <nav
       ref={navbarRef}
-      className={`bg-gradient-to-r ${colors.gradient} backdrop-blur-md border-b ${colors.lightBorder}/30 sticky top-0 z-50 shadow-sm`}
+      className={`bg-gradient-to-r ${colors.gradient} backdrop-blur-md sticky top-0 z-50 shadow-sm`}
     >
       <div className="container mx-auto px-4 py-3">
         <div className="flex justify-between items-center">
